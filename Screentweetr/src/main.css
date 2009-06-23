@@ -1,0 +1,141 @@
+/* CSS file */
+
+Window
+{
+	backgroundAlpha: 0.0;
+	cornerRadius: 0;
+	showFlexChrome: false;
+}
+
+Button
+{
+	fontFamily: Arial;
+	cornerRadius: 8;
+	fontSize: 13;
+	fontWeight: bold;
+	themeColor: #FFFFFF;
+	leading: 0;
+	paddingLeft: 4;
+	paddingRight: 4;
+	paddingTop: 3;
+	paddingBottom: 3;
+	color: #584453;
+	textSelectedColor: #33CCFF;
+	textRollOverColor: #584453;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #C5F0F3, #94E4E8;
+	disabledColor: #9B9B9B;
+	borderColor: #584453;
+	fontStyle: normal;
+}
+
+Label, Text
+{
+	fontFamily: Arial;
+	cornerRadius: 8;
+	fontSize: 13;
+	fontWeight: normal;
+	themeColor: #FFFFFF;
+	leading: 0;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+	color: #584453;
+	textSelectedColor: #33CCFF;
+	textRollOverColor: #FFFFFF;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #C5F0F3, #94E4E8;
+	borderColor: #FFFFFF;
+	disabledColor: #FFFFFF;
+	fontStyle: normal;
+}
+
+@font-face
+{
+	fontFamily: Arial;
+	fontWeight: bold;
+	fontStyle: normal;
+	src: local("Arial");
+}
+@font-face
+{
+	fontFamily: Arial;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Arial");
+}
+/* @font-face
+{
+	fontFamily: Tondo;
+	fontWeight: bold;
+	fontStyle: normal;
+	src: url("fonts/tondo_v0_1_by_ficod.ttf");
+} */
+@font-face
+{
+	fontFamily: Tondo;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: url("fonts/tondo_v0_1_by_ficod.ttf");
+}
+@font-face
+{
+	fontFamily: Tondo;
+	fontWeight: bold;
+	fontStyle: normal;
+	src: local("Tondo");
+}
+@font-face
+{
+	fontFamily: "tondo_v0_1_by_ficod";
+	fontWeight: normal;
+	fontStyle: normal;
+	src: url("fonts/tondo_v0_1_by_ficod.ttf");
+}
+
+LinkButton
+{
+	fontSize: 11;
+	fontWeight: normal;
+	textAlign: right;
+	paddingLeft: 0;
+	paddingRight: 3;
+	paddingTop: 1;
+	paddingBottom: 0;
+}
+@font-face
+{
+	fontFamily: Arial;
+	fontWeight: bold;
+	fontStyle: italic;
+	src: local("Arial");
+}
+@font-face
+{
+	fontFamily: Arial;
+	fontWeight: normal;
+	fontStyle: italic;
+	src: local("Arial");
+}
+
+.panel
+{
+	borderSkin: ClassReference('skin.PanelSkin');
+}
+CheckBox
+{
+	fontSize: 12;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+}
+RadioButton
+{
+	fontSize: 12;
+	paddingBottom: 0;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+}

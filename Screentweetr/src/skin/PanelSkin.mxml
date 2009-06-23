@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skins:GraphicBorderSkin xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="com.degrafa.*"
+						 xmlns:paint="com.degrafa.paint.*" xmlns:geometry="com.degrafa.geometry.*"
+						 xmlns:skins="com.degrafa.skins.*">
+						 
+	<skins:fills>
+		<paint:SolidFill id="innerFill" color="0xddffcc" />
+	</skins:fills>
+
+	<skins:strokes>
+		<paint:SolidStroke id="strokeInline" color="0xedffe5" />
+		<paint:SolidStroke id="strokeOutline" color="0xbddcad" weight="2" />
+	</skins:strokes>
+
+	<skins:geometry>
+		<GeometryComposition>
+			<geometry:RegularRectangle x="1" y="1" width="{skinWidth - 2}" height="{skinHeight - 2}"
+									   stroke="{ strokeOutline }">
+			</geometry:RegularRectangle>
+			<geometry:RegularRectangle x="1" y="1" width="{skinWidth - 3}" height="{skinHeight - 3}"
+									   fill="{ innerFill }" stroke="{ strokeInline }">
+			</geometry:RegularRectangle>
+		</GeometryComposition>
+	</skins:geometry>
+
+</skins:GraphicBorderSkin>

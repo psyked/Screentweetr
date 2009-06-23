@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
+  <version>0.5</version>
+  <url>http://www.psyked.co.uk/airapps/Screentweetr05.air</url>
+  <description><![CDATA[Screentweetr
+Version 0.5:
+ * Updated the settings screen to introduce more application options.
+ * Added the start on login functionality to Screentweetr.
+Version 0.4.2:
+ * Fixed a bug with the saving and loading of twitter credentials.
+Version 0.4.1:
+ * Fixed a bug with the default notification window state.
+ * Updated Mac graphics.
+Version 0.4:
+ * Added a Welcome/Help screen to the application.
+ * Twitter credentials are now encrypted.
+Version 0.3:
+ * Added the ability to add messages and auto-post TwitPic tweets.
+ * Improved behaviour on a Mac.
+Version 0.2:
+ * Twitter password field does not show characters.
+ * Uploads actually work first time around.]]></description>
+</update>

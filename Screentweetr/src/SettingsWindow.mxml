@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="500" height="280"
+		   closing="onClosing(event);" backgroundColor="#C6F0F3" horizontalScrollPolicy="off"
+		   verticalScrollPolicy="off" initialize="init(event);">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import couk.mmtdigital.air.ApplicationConfig;
+			import couk.psyked.air.BindableApplicationInfo;
+			import config.ScreentweetrApplicationConfig;
+			import events.DTEvent;
+
+			private function init(e:FlexEvent):void
+			{
+				if (ApplicationConfig.instance.getSetting("showWelcome") != "false")
+				{
+					show_window.selected = true;
+				}
+				else
+				{
+					show_window.selected = false;
+				}
+
+				if (ApplicationConfig.instance.getSetting("startOnLogin") != "true")
+				{
+					start_on_login.selected = false;
+				}
+				else
+				{
+					start_on_login.selected = true;
+
+				}
+				
+				switch (ApplicationConfig.instance.getSetting("imageService"))
+				{
+					case "twitpic":
+						twitpic_chk.selected = true;
+						break;
+					default:
+						twitpic_chk.selected = true;
+						break;
+				}
+			}
+
+			private function onClosing(e:Event):void
+			{
+				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.CLOSE_SETTINGS));
+			}
+
+			private function onSave(e:Event):void
+			{
+				//trace("saving", username_input.text, password_input.text);
+				ScreentweetrApplicationConfig.getInstance().USERNAME = username_input.text;
+				ScreentweetrApplicationConfig.getInstance().PASSWORD = password_input.text;
+				close();
+			}
+
+			private function onCancel(e:Event):void
+			{
+				close();
+			}
+
+			private function onReset(e:Event):void
+			{
+				ApplicationConfig.instance.deleteAllSettings();
+			}
+
+			private function onShowWelcomeClick(e:Event):void
+			{
+				ApplicationConfig.instance.setSetting("showWelcome", (show_window.selected).toString());
+			}
+
+			private function onStartOnLoginClick(e:Event):void
+			{
+				ApplicationConfig.instance.setSetting("startOnLogin", (start_on_login.selected).toString());
+				try
+				{
+					NativeApplication.nativeApplication.startAtLogin = start_on_login.selected;
+				}
+				catch (e:Error)
+				{
+					trace(e.message);
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:Canvas backgroundColor="#c6f0f3" width="100%" height="100%" verticalScrollPolicy="off"
+			   horizontalScrollPolicy="off">
+		<mx:Label x="0" y="0" text="Screentweetr Settings" color="#584453" fontSize="20"
+				  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
+				  paddingTop="6" />
+		<mx:Button x="10" y="244" label="Reset to defaults (&amp; forget login details)"
+				   buttonMode="true" fontSize="12" click="onReset(event);" />
+		<mx:VBox x="288" y="38" width="200" height="197" styleName="panel" verticalGap="4"
+				 paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+			<mx:Label x="10" y="10" text="Twitter settings" color="#584453" fontFamily="Arial"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
+					  fontWeight="bold" />
+			<mx:Label x="10" y="37" text="Username" color="#584453" fontFamily="Arial"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
+					  fontSize="12" />
+			<mx:TextInput id="username_input"
+						  text="{ScreentweetrApplicationConfig.getInstance().USERNAME}" width="100%" />
+			<mx:Label text="Password" color="#584453" fontFamily="Arial" paddingBottom="0"
+					  paddingLeft="0" paddingRight="0" paddingTop="0" fontSize="12" />
+			<mx:TextInput id="password_input"
+						  text="{ScreentweetrApplicationConfig.getInstance().PASSWORD}" width="100%"
+						  displayAsPassword="true" />
+			<mx:Text text="* Your username and password are stored encrypted, so don't worry."
+					 fontSize="11" height="100%" width="100%" selectable="false" />
+		</mx:VBox>
+		<mx:Button label="Save changes" click="onSave(event);" buttonMode="true" x="394" y="244"
+				   fontSize="12" />
+		<mx:Button x="281" y="244" label="Cancel changes" fontSize="12" click="onCancel(event);"
+				   buttonMode="true" />
+		<mx:VBox x="2" y="39" width="280" height="197" paddingBottom="10" paddingLeft="10"
+				 paddingRight="10" paddingTop="10" verticalGap="4">
+			<mx:CheckBox label="Show welcome screen on startup" fontSize="12" selected="true"
+						 id="show_window" click="onShowWelcomeClick(event);"  useHandCursor="true"/>
+			<mx:CheckBox label="Start Screentweetr automatically on login" fontSize="12"
+						 id="start_on_login" click="onStartOnLoginClick(event);"  useHandCursor="true"/>
+			<mx:Label text="Services" color="#584453" fontFamily="Arial" paddingBottom="0"
+					  paddingLeft="0" paddingRight="0" paddingTop="0" fontWeight="bold" />
+			<mx:Label text="Select which upload service you'd like to use;" fontSize="12" />
+			<mx:Grid horizontalGap="4" verticalGap="4" width="100%">
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="TwitPic" selected="true" id="twitpic_chk" />
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="yFrog" enabled="false" />
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="TweetPhoto" enabled="false" />
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="Mobypicture" enabled="false" />
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="Twitgoo" enabled="false" />
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="img.ly" enabled="false" />
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="Posterous" enabled="false" />
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+		</mx:VBox>
+		<mx:Label x="288" y="11" text="version {BindableApplicationInfo.appVersion}" fontSize="12"
+				  fontWeight="normal" textAlign="right" width="200" />
+		<mx:Label x="8" y="29" text="(items that are greyed out are currently in development)"
+				  fontSize="11" fontStyle="italic" />
+		<!--<mx:Button x="160" y="114.15" label="Cancel"/>-->
+	</mx:Canvas>
+</mx:Window>

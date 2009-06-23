@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+				initialize="init(event);" creationComplete="creationComplete(event);">
+	<mx:Script>
+		<![CDATA[
+			import couk.mmtdigital.air.ApplicationConfig;
+			/**
+			 * Do to:
+			 * 				- Use updated settings class to keep passwords secure
+			 * 				- Copy settings to secure area
+			 * 				- Add link to twitter settings screen to twitter signup page
+			 * 				- Add help / welcome screens
+			 * 				- Use inverse blendmode on progress bars (block and text)
+			 */
+
+			import air.update.ApplicationUpdaterUI;
+			import air.update.events.UpdateEvent;
+			import twitter.TwitterSettings;
+			import twitter.TwitPic;
+			import com.pfp.events.JPEGAsyncCompleteEvent;
+			import com.pfp.utils.JPEGAsyncEncoder;
+			import config.ScreentweetrApplicationConfig;
+			import events.DTEvent;
+			import couk.psyked.air.printscreen.events.PrintScreenMonitorEvent;
+			import mx.events.FlexEvent;
+			import couk.psyked.air.printscreen.PrintScreenMonitor;
+			import mx.core.Window;
+
+			private var notification:NotificationWindow;
+			private var settings:SettingsWindow;
+			private var help:HelpWindow;
+			private static var _bitmapcache:BitmapData;
+
+			public var updater:ApplicationUpdaterUI = new ApplicationUpdaterUI();
+
+			private var screenshotmonitor:PrintScreenMonitor;
+			private var dockImage:BitmapData;
+			private var _config:ScreentweetrApplicationConfig;
+			private var encoder:JPEGAsyncEncoder;
+
+			private static var _instance:Screentweetr;
+
+			private function init(e:FlexEvent):void
+			{
+				_instance = this;
+
+				screenshotmonitor = new PrintScreenMonitor(250);
+				screenshotmonitor.addEventListener(PrintScreenMonitorEvent.ADD_SCREENSHOT, onScreenshot);
+				screenshotmonitor.addEventListener(PrintScreenMonitorEvent.CHANGE_SCREENSHOT, onScreenshot);
+				screenshotmonitor.addEventListener(PrintScreenMonitorEvent.REMOVE_SCREENSHOT, removeScreenshot);
+				screenshotmonitor.watch();
+
+				_config = ScreentweetrApplicationConfig.getInstance();
+				_config.addEventListener(ScreentweetrApplicationConfig.APPLICATION_CONFIG_READY, onSettingsLoaded);
+				_config.load();
+
+				encoder = new JPEGAsyncEncoder(100);
+				encoder.PixelsPerIteration = 256;
+				encoder.addEventListener(JPEGAsyncCompleteEvent.JPEGASYNC_COMPLETE, onEncodingComplete);
+				encoder.addEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
+
+				NativeApplication.nativeApplication.addEventListener(DTEvent.OPEN_SETTINGS, onOpenSettings);
+				NativeApplication.nativeApplication.addEventListener(DTEvent.CLOSE_SETTINGS, onCloseSettings);
+				NativeApplication.nativeApplication.addEventListener(DTEvent.OPEN_HELP, onOpenHelp);
+				NativeApplication.nativeApplication.addEventListener(DTEvent.CLOSE_HELP, onCloseHelp);
+				NativeApplication.nativeApplication.addEventListener(DTEvent.UPLOAD_IMAGE, onUploadImage);
+
+				updater.configurationFile = File.applicationDirectory.resolvePath("config/updaterConfig.xml");
+				updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitialized);
+				updater.initialize();
+			}
+
+			private function updaterInitialized(e:UpdateEvent):void
+			{
+				updater.checkNow();
+			}
+
+			private function creationComplete(e:Event):void
+			{
+
+				var loader:Loader = new Loader();
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, prepareForSystray);
+				if (Capabilities.os.toString().toLowerCase().indexOf("windows") != -1)
+				{
+					loader.load(new URLRequest("images/Monitor-Dock-16.png"));
+				}
+				else
+				{
+					loader.load(new URLRequest("images/iMac-Dock-512.png"));
+				}
+
+				//NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_HELP));
+			}
+
+			public function onSettingsLoaded(e:Event):void
+			{
+				//trace("Settings are loaded.");
+				TwitterSettings.instance.username = _config.USERNAME;
+				TwitterSettings.instance.password = _config.PASSWORD;
+				//trace('ApplicationConfig.instance.getSetting("showWelcome")',ApplicationConfig.instance.getSetting("showWelcome"));
+				//callLater(function():void
+				//	{
+				if (ApplicationConfig.instance.getSetting("showWelcome") != "false")
+				{
+					callLater(function():void
+						{
+							NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_HELP));
+						});
+				}
+				//	});
+				notification = new NotificationWindow();
+				notification.type = NativeWindowType.LIGHTWEIGHT;
+				notification.systemChrome = NativeWindowSystemChrome.NONE;
+				notification.transparent = true;
+				notification.open(false);
+				application.dispatchEvent(new Event(DTEvent.CLOSE_NOTIFICATION));
+			}
+
+			private function onUploadImage(e:Event):void
+			{
+				encoder.encode(bitmapdata);
+			}
+
+			private function onEncodingComplete(e:JPEGAsyncCompleteEvent):void
+			{
+				var newFile:File = File.createTempFile();
+				var newFileStream:FileStream = new FileStream();
+				newFileStream.open(newFile, FileMode.WRITE);
+				newFileStream.writeBytes(e.ImageData);
+				newFileStream.close();
+				TwitPic.instance.selectFile(newFile);
+			}
+
+			private function onEncodingProgress(e:ProgressEvent):void
+			{
+				dispatchEvent(e.clone());
+				//trace(Math.round(e.bytesLoaded / e.bytesTotal * 100));
+			}
+
+			private function onScreenshot(e:Event = null):void
+			{
+				if (e as PrintScreenMonitorEvent)
+				{
+					_bitmapcache = (e as PrintScreenMonitorEvent).bitmap.bitmapData;
+				}
+				else
+				{
+
+				}
+				application.dispatchEvent(new Event(DTEvent.OPEN_NOTIFICATION));
+			}
+
+			private function removeScreenshot(e:PrintScreenMonitorEvent):void
+			{
+				application.dispatchEvent(new Event(DTEvent.CLOSE_NOTIFICATION));
+			}
+
+			public static function get bitmapdata():BitmapData
+			{
+				return _bitmapcache;
+			}
+
+			private function onOpenSettings(e:Event):void
+			{
+				//trace("open settings")
+				if (settings == null)
+				{
+					settings = new SettingsWindow();
+					settings.type = NativeWindowType.UTILITY;
+					settings.systemChrome = NativeWindowSystemChrome.ALTERNATE;
+					settings.title = "Screentweetr Settings";
+					settings.open(true);
+					settings.nativeWindow.x = (Screen.mainScreen.visibleBounds.width - settings.width) / 2;
+					settings.nativeWindow.y = (Screen.mainScreen.visibleBounds.height - settings.height) / 2;
+				}
+				else
+				{
+					//settings.activate();
+					settings.orderToFront();
+				}
+			}
+
+			private function onCloseSettings(e:Event):void
+			{
+				//settings.close();
+				settings = null;
+			}
+
+			private function onOpenHelp(e:Event):void
+			{
+				//trace("open help")
+				//trace("help:",help);
+				if (help == null)
+				{
+					help = new HelpWindow();
+					help.type = NativeWindowType.UTILITY;
+					help.systemChrome = NativeWindowSystemChrome.ALTERNATE;
+					help.title = "Welcome to Screentweetr";
+					help.open(true);
+					help.nativeWindow.x = (Screen.mainScreen.visibleBounds.width - help.width) / 2;
+					help.nativeWindow.y = (Screen.mainScreen.visibleBounds.height - help.height) / 2;
+				}
+				else
+				{
+					//settings.activate();
+					help.orderToFront();
+				}
+			}
+
+			private function onCloseHelp(e:Event):void
+			{
+				//settings.close();
+				help = null;
+			}
+
+			private function createSystrayRootMenu():NativeMenu
+			{
+				//Add the menuitems with the corresponding actions 
+				var menu:NativeMenu = new NativeMenu();
+
+				var openHelpItem:NativeMenuItem = new NativeMenuItem("Help");
+				var openSettingsItem:NativeMenuItem = new NativeMenuItem("Settings");
+				var exitNativeMenuItem:NativeMenuItem = new NativeMenuItem("Close");
+
+				//What should happen when the user clicks on something...       
+				openHelpItem.addEventListener(Event.SELECT, onNativeMenuOpenHelp);
+				openSettingsItem.addEventListener(Event.SELECT, onNativeMenuOpenSettings);
+				exitNativeMenuItem.addEventListener(Event.SELECT, onNativeMenuCloseMain);
+
+				//Add the menuitems to the menu 
+				menu.addItem(openHelpItem);
+				menu.addItem(openSettingsItem);
+				menu.addItem(new NativeMenuItem("", true));
+				//separator 
+				menu.addItem(exitNativeMenuItem);
+
+				return menu;
+			}
+
+			private function onNativeMenuOpenSettings(e:Event = null):void
+			{
+				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_SETTINGS));
+			}
+
+			private function onNativeMenuOpenHelp(e:Event = null):void
+			{
+				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_HELP));
+			}
+
+			private function onNativeMenuCloseMain(e:Event = null):void
+			{
+				NativeApplication.nativeApplication.exit();
+			}
+
+			private function setSystemTrayProperties():void
+			{
+				SystemTrayIcon(NativeApplication.nativeApplication.icon).tooltip = "Screentweetr";
+				SystemTrayIcon(NativeApplication.nativeApplication.icon).addEventListener(ScreenMouseEvent.CLICK, onScreenshot);
+			}
+
+			public function prepareForSystray(event:Event):void
+			{
+				dockImage = event.target.content.bitmapData;
+				if (NativeApplication.supportsSystemTrayIcon)
+				{
+					setSystemTrayProperties();
+					SystemTrayIcon(NativeApplication.nativeApplication.icon).menu = createSystrayRootMenu();
+				}
+				NativeApplication.nativeApplication.icon.bitmaps = [dockImage];
+			}
+
+			public static function get instance():Screentweetr
+			{
+				if (!_instance)
+				{
+					_instance = new Screentweetr();
+				}
+				return _instance;
+			}
+		]]>
+	</mx:Script>
+	<mx:Style source="main.css" />
+</mx:Application>
