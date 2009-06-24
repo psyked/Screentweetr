@@ -1,6 +1,6 @@
 package twitter
 {
-	import config.ScreentweetrApplicationConfig;
+	import couk.mmtdigital.air.ApplicationConfig;
 
 	import flash.events.DataEvent;
 	import flash.events.Event;
@@ -15,19 +15,19 @@ package twitter
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 
-	public class TwitPic extends EventDispatcher
+	public class TwitPic extends EventDispatcher implements ITwitterService
 	{
 
 		private static var _instance:TwitPic;
 		private var _file:File;
-		private var _message:String;
+		private var message:String;
 
 		public function TwitPic()
 		{
 			//
 		}
 
-		public function selectFile(f:File):void
+		private function selectFile(f:File):void
 		{
 			_file = f;
 			_file.addEventListener(Event.CANCEL, cancelHandler);
@@ -38,7 +38,13 @@ package twitter
 			_file.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			_file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			_file.addEventListener(Event.SELECT, selectHandler);
-			_file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); //_file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+			_file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+		}
+
+		public function uploadToService(file:File, _message:String = null):void
+		{
+			selectFile(file);
+			message = _message;
 			fileSelected();
 		}
 
@@ -90,9 +96,8 @@ package twitter
 			var urlRequest:URLRequest
 
 			var urlVars:URLVariables = new URLVariables();
-			urlVars.username = ScreentweetrApplicationConfig.getInstance().USERNAME;
-			urlVars.password = ScreentweetrApplicationConfig.getInstance().PASSWORD;
-
+			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
+			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword");
 			if (message)
 			{
 				urlRequest = new URLRequest("http://twitpic.com/api/uploadAndPost");
@@ -102,7 +107,7 @@ package twitter
 			{
 				urlRequest = new URLRequest("http://twitpic.com/api/upload");
 			}
-			
+
 			urlRequest.method = URLRequestMethod.POST;
 			urlRequest.data = urlVars;
 
@@ -141,15 +146,15 @@ package twitter
 			dispatchEvent(event.clone());
 		}
 
-		public function get message():String
-		{
-			return _message;
-		}
+		/* public function get message():String
+		   {
+		   return _message;
+		   }
 
-		public function set message(v:String):void
-		{
-			_message = v;
-		}
+		   public function set message(v:String):void
+		   {
+		   _message = v;
+		 } */
 
 		public static function get instance():TwitPic
 		{

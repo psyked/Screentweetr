@@ -10,7 +10,7 @@
 		<![CDATA[
 			import flash.net.navigateToURL;
 			import mx.binding.utils.BindingUtils;
-			import twitter.TwitterSettings;
+			//import twitter.TwitterSettings;
 			import com.pfp.utils.JPEGAsyncEncoder;
 			import twitter.TwitPic;
 			import config.ScreentweetrApplicationConfig;
@@ -54,7 +54,8 @@
 			private function onMessageChangeHandler(e:Event = null):void
 			{
 				character_count.text = (113 - message_text.text.length).toString();
-				TwitPic.instance.message = message_text.text;
+				//TwitPic.instance.message = message_text.text;
+				Screentweetr.instance.uploadMessage = message_text.text;
 			}
 
 			private function uploadCompleteDataHandler(event:DataEvent):void
@@ -178,7 +179,8 @@
 			
 			private function removeMessage(e:Event = null):void {
 				Tweener.addTween(message_bubble, {alpha: 0, time: 0.5, onComplete:onMessageBubbleCloseCompleteHandler});
-				TwitPic.instance.message = null;
+				//TwitPic.instance.message = null;
+				Screentweetr.instance.uploadMessage = null;
 			}
 		]]>
 	</mx:Script>

@@ -64,6 +64,7 @@ package config
 
 		public function refreshConfigFile():void
 		{
+			trace(ApplicationConfig.instance.getSetting("twitterUsername"));
 			if (ApplicationConfig.instance.getSetting("twitterUsername"))
 			{
 				instance.USERNAME = ApplicationConfig.instance.getSetting("twitterUsername");

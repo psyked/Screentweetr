@@ -31,10 +31,13 @@
 
 				}
 				
-				switch (ApplicationConfig.instance.getSetting("imageService"))
+				switch (ApplicationConfig.instance.getSetting("defaultService"))
 				{
-					case "twitpic":
+					case "TwitPic":
 						twitpic_chk.selected = true;
+						break;
+					case "TweetPhoto":
+						tweetphoto_chk.selected = true;
 						break;
 					default:
 						twitpic_chk.selected = true;
@@ -125,7 +128,9 @@
 			<mx:Grid horizontalGap="4" verticalGap="4" width="100%">
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="TwitPic" selected="true" id="twitpic_chk" />
+						<mx:RadioButton label="TwitPic" selected="true" id="twitpic_chk" >
+							<mx:click>ApplicationConfig.instance.setSetting(&quot;defaultService&quot;, &quot;TwitPic&quot;);</mx:click>
+						</mx:RadioButton>
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
 						<mx:RadioButton label="yFrog" enabled="false" />
@@ -133,7 +138,9 @@
 				</mx:GridRow>
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="TweetPhoto" enabled="false" />
+						<mx:RadioButton label="TweetPhoto" id="tweetphoto_chk">
+							<mx:click>ApplicationConfig.instance.setSetting(&quot;defaultService&quot;, &quot;TweetPhoto&quot;);</mx:click>
+						</mx:RadioButton>
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
 						<mx:RadioButton label="Mobypicture" enabled="false" />
@@ -152,6 +159,7 @@
 						<mx:RadioButton label="Posterous" enabled="false" />
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
+						<mx:RadioButton label="ScreenTweet" enabled="false" />
 					</mx:GridItem>
 				</mx:GridRow>
 			</mx:Grid>

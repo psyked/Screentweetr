@@ -15,7 +15,6 @@
 
 			import air.update.ApplicationUpdaterUI;
 			import air.update.events.UpdateEvent;
-			import twitter.TwitterSettings;
 			import twitter.TwitPic;
 			import com.pfp.events.JPEGAsyncCompleteEvent;
 			import com.pfp.utils.JPEGAsyncEncoder;
@@ -37,6 +36,8 @@
 			private var dockImage:BitmapData;
 			private var _config:ScreentweetrApplicationConfig;
 			private var encoder:JPEGAsyncEncoder;
+			
+			public var uploadMessage:String
 
 			private static var _instance:Screentweetr;
 
@@ -89,17 +90,11 @@
 					loader.load(new URLRequest("images/iMac-Dock-512.png"));
 				}
 
-				//NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_HELP));
 			}
 
 			public function onSettingsLoaded(e:Event):void
 			{
-				//trace("Settings are loaded.");
-				TwitterSettings.instance.username = _config.USERNAME;
-				TwitterSettings.instance.password = _config.PASSWORD;
-				//trace('ApplicationConfig.instance.getSetting("showWelcome")',ApplicationConfig.instance.getSetting("showWelcome"));
-				//callLater(function():void
-				//	{
+
 				if (ApplicationConfig.instance.getSetting("showWelcome") != "false")
 				{
 					callLater(function():void
@@ -107,13 +102,18 @@
 							NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_HELP));
 						});
 				}
-				//	});
+				//trace(ApplicationConfig.instance.getSetting("defaultService"));
+				if(!ApplicationConfig.instance.getSetting("defaultService")){
+					ApplicationConfig.instance.setSetting("defaultService", "TwitPic");
+				}
+				
 				notification = new NotificationWindow();
 				notification.type = NativeWindowType.LIGHTWEIGHT;
 				notification.systemChrome = NativeWindowSystemChrome.NONE;
 				notification.transparent = true;
 				notification.open(false);
 				application.dispatchEvent(new Event(DTEvent.CLOSE_NOTIFICATION));
+
 			}
 
 			private function onUploadImage(e:Event):void
@@ -128,13 +128,12 @@
 				newFileStream.open(newFile, FileMode.WRITE);
 				newFileStream.writeBytes(e.ImageData);
 				newFileStream.close();
-				TwitPic.instance.selectFile(newFile);
+				TwitPic.instance.uploadToService(newFile);
 			}
 
 			private function onEncodingProgress(e:ProgressEvent):void
 			{
 				dispatchEvent(e.clone());
-				//trace(Math.round(e.bytesLoaded / e.bytesTotal * 100));
 			}
 
 			private function onScreenshot(e:Event = null):void
@@ -145,7 +144,7 @@
 				}
 				else
 				{
-
+					//
 				}
 				application.dispatchEvent(new Event(DTEvent.OPEN_NOTIFICATION));
 			}
@@ -162,7 +161,6 @@
 
 			private function onOpenSettings(e:Event):void
 			{
-				//trace("open settings")
 				if (settings == null)
 				{
 					settings = new SettingsWindow();
@@ -175,21 +173,17 @@
 				}
 				else
 				{
-					//settings.activate();
 					settings.orderToFront();
 				}
 			}
 
 			private function onCloseSettings(e:Event):void
 			{
-				//settings.close();
 				settings = null;
 			}
 
 			private function onOpenHelp(e:Event):void
 			{
-				//trace("open help")
-				//trace("help:",help);
 				if (help == null)
 				{
 					help = new HelpWindow();
@@ -202,14 +196,12 @@
 				}
 				else
 				{
-					//settings.activate();
 					help.orderToFront();
 				}
 			}
 
 			private function onCloseHelp(e:Event):void
 			{
-				//settings.close();
 				help = null;
 			}
 
