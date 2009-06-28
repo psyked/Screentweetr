@@ -2,7 +2,7 @@ package events
 {
 	import flash.events.Event;
 
-	public class DTEvent extends Event
+	public class ScreentweetrEvent extends Event
 	{
 		
 		public static const OPEN_NOTIFICATION:String = "openNotification";
@@ -13,7 +13,7 @@ package events
 		public static const OPEN_HELP:String = "openHelp";
 		public static const CLOSE_HELP:String = "closeHelp";
 		
-		public function DTEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function ScreentweetrEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 		}

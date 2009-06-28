@@ -14,5 +14,6 @@ package com.pfp.events
 			ImageData = data;
 			super(JPEGASYNC_COMPLETE);		
 		}
+		
 	}
 }

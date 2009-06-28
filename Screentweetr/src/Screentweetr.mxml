@@ -3,6 +3,9 @@
 				initialize="init(event);" creationComplete="creationComplete(event);">
 	<mx:Script>
 		<![CDATA[
+			import twitter.ServiceManager;
+			import couk.psyked.managers.types.EncoderManagerTypes;
+			import couk.psyked.managers.EncoderManager;
 			import couk.mmtdigital.air.ApplicationConfig;
 			/**
 			 * Do to:
@@ -15,11 +18,11 @@
 
 			import air.update.ApplicationUpdaterUI;
 			import air.update.events.UpdateEvent;
-			import twitter.TwitPic;
+			//import twitter.TwitPic;
 			import com.pfp.events.JPEGAsyncCompleteEvent;
 			import com.pfp.utils.JPEGAsyncEncoder;
 			import config.ScreentweetrApplicationConfig;
-			import events.DTEvent;
+			import events.ScreentweetrEvent;
 			import couk.psyked.air.printscreen.events.PrintScreenMonitorEvent;
 			import mx.events.FlexEvent;
 			import couk.psyked.air.printscreen.PrintScreenMonitor;
@@ -35,8 +38,8 @@
 			private var screenshotmonitor:PrintScreenMonitor;
 			private var dockImage:BitmapData;
 			private var _config:ScreentweetrApplicationConfig;
-			private var encoder:JPEGAsyncEncoder;
-			
+			/* private var encoder:JPEGAsyncEncoder; */
+
 			public var uploadMessage:String
 
 			private static var _instance:Screentweetr;
@@ -55,16 +58,13 @@
 				_config.addEventListener(ScreentweetrApplicationConfig.APPLICATION_CONFIG_READY, onSettingsLoaded);
 				_config.load();
 
-				encoder = new JPEGAsyncEncoder(100);
-				encoder.PixelsPerIteration = 256;
-				encoder.addEventListener(JPEGAsyncCompleteEvent.JPEGASYNC_COMPLETE, onEncodingComplete);
-				encoder.addEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
+				EncoderManager.instance.serviceType = EncoderManagerTypes.JPEG;
 
-				NativeApplication.nativeApplication.addEventListener(DTEvent.OPEN_SETTINGS, onOpenSettings);
-				NativeApplication.nativeApplication.addEventListener(DTEvent.CLOSE_SETTINGS, onCloseSettings);
-				NativeApplication.nativeApplication.addEventListener(DTEvent.OPEN_HELP, onOpenHelp);
-				NativeApplication.nativeApplication.addEventListener(DTEvent.CLOSE_HELP, onCloseHelp);
-				NativeApplication.nativeApplication.addEventListener(DTEvent.UPLOAD_IMAGE, onUploadImage);
+				NativeApplication.nativeApplication.addEventListener(ScreentweetrEvent.OPEN_SETTINGS, onOpenSettings);
+				NativeApplication.nativeApplication.addEventListener(ScreentweetrEvent.CLOSE_SETTINGS, onCloseSettings);
+				NativeApplication.nativeApplication.addEventListener(ScreentweetrEvent.OPEN_HELP, onOpenHelp);
+				NativeApplication.nativeApplication.addEventListener(ScreentweetrEvent.CLOSE_HELP, onCloseHelp);
+				NativeApplication.nativeApplication.addEventListener(ScreentweetrEvent.UPLOAD_IMAGE, onUploadImage);
 
 				updater.configurationFile = File.applicationDirectory.resolvePath("config/updaterConfig.xml");
 				updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitialized);
@@ -99,40 +99,46 @@
 				{
 					callLater(function():void
 						{
-							NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_HELP));
+							NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_HELP));
 						});
 				}
-				//trace(ApplicationConfig.instance.getSetting("defaultService"));
-				if(!ApplicationConfig.instance.getSetting("defaultService")){
+
+				if (!ApplicationConfig.instance.getSetting("defaultService"))
+				{
 					ApplicationConfig.instance.setSetting("defaultService", "TwitPic");
 				}
-				
+
 				notification = new NotificationWindow();
 				notification.type = NativeWindowType.LIGHTWEIGHT;
 				notification.systemChrome = NativeWindowSystemChrome.NONE;
 				notification.transparent = true;
 				notification.open(false);
-				application.dispatchEvent(new Event(DTEvent.CLOSE_NOTIFICATION));
+				application.dispatchEvent(new Event(ScreentweetrEvent.CLOSE_NOTIFICATION));
 
 			}
 
 			private function onUploadImage(e:Event):void
 			{
-				encoder.encode(bitmapdata);
+				trace("Screentweetr onUploadImage");
+				EncoderManager.instance.addEventListener(JPEGAsyncCompleteEvent.JPEGASYNC_COMPLETE, onEncodingComplete);
+				EncoderManager.instance.addEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
+				EncoderManager.instance.encodeBitmapData(bitmapdata);
 			}
 
 			private function onEncodingComplete(e:JPEGAsyncCompleteEvent):void
 			{
+				trace("Screentweetr onEncodingComplete");
 				var newFile:File = File.createTempFile();
 				var newFileStream:FileStream = new FileStream();
 				newFileStream.open(newFile, FileMode.WRITE);
 				newFileStream.writeBytes(e.ImageData);
 				newFileStream.close();
-				TwitPic.instance.uploadToService(newFile);
+				ServiceManager.instance.uploadToService(newFile, uploadMessage);
 			}
 
 			private function onEncodingProgress(e:ProgressEvent):void
 			{
+				trace("Screentweetr progress event");
 				dispatchEvent(e.clone());
 			}
 
@@ -146,12 +152,12 @@
 				{
 					//
 				}
-				application.dispatchEvent(new Event(DTEvent.OPEN_NOTIFICATION));
+				application.dispatchEvent(new Event(ScreentweetrEvent.OPEN_NOTIFICATION));
 			}
 
 			private function removeScreenshot(e:PrintScreenMonitorEvent):void
 			{
-				application.dispatchEvent(new Event(DTEvent.CLOSE_NOTIFICATION));
+				application.dispatchEvent(new Event(ScreentweetrEvent.CLOSE_NOTIFICATION));
 			}
 
 			public static function get bitmapdata():BitmapData
@@ -231,12 +237,12 @@
 
 			private function onNativeMenuOpenSettings(e:Event = null):void
 			{
-				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_SETTINGS));
+				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));
 			}
 
 			private function onNativeMenuOpenHelp(e:Event = null):void
 			{
-				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_HELP));
+				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_HELP));
 			}
 
 			private function onNativeMenuCloseMain(e:Event = null):void

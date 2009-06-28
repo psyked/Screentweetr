@@ -19,89 +19,35 @@ package twitter
 	{
 
 		private static var _instance:TwitPic;
-		private var _file:File;
-		private var message:String;
+		private var file:File;
 
 		public function TwitPic()
 		{
 			//
 		}
 
-		private function selectFile(f:File):void
+		public function uploadToService(_file:File, _message:String = null):void
 		{
-			_file = f;
-			_file.addEventListener(Event.CANCEL, cancelHandler);
-			_file.addEventListener(Event.COMPLETE, completeHandler);
-			_file.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-			_file.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			_file.addEventListener(Event.OPEN, openHandler);
-			_file.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			_file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-			_file.addEventListener(Event.SELECT, selectHandler);
-			_file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
-		}
+			file = _file;
+			file.addEventListener(Event.CANCEL, cancelHandler);
+			file.addEventListener(Event.COMPLETE, completeHandler);
+			file.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+			file.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			file.addEventListener(Event.OPEN, openHandler);
+			file.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+			file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 
-		public function uploadToService(file:File, _message:String = null):void
-		{
-			selectFile(file);
-			message = _message;
-			fileSelected();
-		}
-
-		private function cancelHandler(event:Event):void
-		{
-			trace("cancelHandler: " + event);
-		}
-
-		private function completeHandler(event:Event):void
-		{
-			trace("completeHandler: " + event);
-		}
-
-		private function httpStatusHandler(event:HTTPStatusEvent):void
-		{
-			trace("httpStatusHandler: " + event);
-		}
-
-		private function ioErrorHandler(event:IOErrorEvent):void
-		{
-			trace("ioErrorHandler: " + event);
-		}
-
-		private function openHandler(event:Event):void
-		{
-			trace("openHandler: " + event);
-		}
-
-		private function progressHandler(event:ProgressEvent):void
-		{
-			var file:FileReference = FileReference(event.target);
-			dispatchEvent(event.clone());
-			trace("Uploading", Math.round((event.bytesLoaded / event.bytesTotal) * 100), "%");
-		}
-
-		private function securityErrorHandler(event:SecurityErrorEvent):void
-		{
-			trace("securityErrorHandler: " + event);
-		}
-
-		private function selectHandler(event:Event):void
-		{
-			var file:FileReference = FileReference(event.target);
-			trace("selectHandler: name=" + file.name);
-		}
-
-		private function fileSelected(event:Event = null):void
-		{
-			var urlRequest:URLRequest
+			var urlRequest:URLRequest;
 
 			var urlVars:URLVariables = new URLVariables();
 			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
 			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword");
-			if (message)
+			
+			if (_message)
 			{
 				urlRequest = new URLRequest("http://twitpic.com/api/uploadAndPost");
-				urlVars.message = message;
+				urlVars.message = _message;
 			}
 			else
 			{
@@ -111,50 +57,71 @@ package twitter
 			urlRequest.method = URLRequestMethod.POST;
 			urlRequest.data = urlVars;
 
-			_file.upload(urlRequest, 'media');
+			file.upload(urlRequest, 'media');
+		}
+
+		private function cancelHandler(event:Event):void
+		{
+			dispatchEvent(event.clone());
+			trace("cancelHandler: " + event);
+		}
+
+		private function completeHandler(event:Event):void
+		{
+			dispatchEvent(event.clone());
+			trace("completeHandler: " + event);
+		}
+
+		private function httpStatusHandler(event:HTTPStatusEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("httpStatusHandler: " + event);
+		}
+
+		private function ioErrorHandler(event:IOErrorEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("ioErrorHandler: " + event);
+		}
+
+		private function openHandler(event:Event):void
+		{
+			dispatchEvent(event.clone());
+			trace("openHandler: " + event);
+		}
+
+		private function progressHandler(event:ProgressEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("Uploading", Math.round((event.bytesLoaded / event.bytesTotal) * 100), "%");
+		}
+
+		private function securityErrorHandler(event:SecurityErrorEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("securityErrorHandler: " + event);
 		}
 
 		private function uploadCompleteDataHandler(event:DataEvent):void
 		{
-			trace("Upload is complete, recieved response from TwitPic.");
+			//trace("Upload is complete, recieved response from TwitPic.");
 			var resultXML:XML = new XML(event.text);
 
 			var errorMessage:String = resultXML.child("err")[0];
 			var resultUrl:String = resultXML.child("mediaurl")[0];
 
-			if (resultUrl)
-			{
-				trace("Opening new window to show TwitPic results.");
-					//navigateToURL(new URLRequest(resultUrl), "_blank");
-			}
-			else
-			{
-				trace("FAIL WHALE! :", errorMessage);
-			}
-
-			_file.removeEventListener(Event.CANCEL, cancelHandler);
-			_file.removeEventListener(Event.COMPLETE, completeHandler);
-			_file.removeEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-			_file.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			_file.removeEventListener(Event.OPEN, openHandler);
-			_file.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
-			_file.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-			_file.removeEventListener(Event.SELECT, selectHandler);
-			_file.removeEventListener(Event.COMPLETE, uploadCompleteDataHandler);
-			_file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+			file.removeEventListener(Event.CANCEL, cancelHandler);
+			file.removeEventListener(Event.COMPLETE, completeHandler);
+			file.removeEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+			file.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			file.removeEventListener(Event.OPEN, openHandler);
+			file.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+			file.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+			file.removeEventListener(Event.COMPLETE, uploadCompleteDataHandler);
+			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); 
 
 			dispatchEvent(event.clone());
 		}
-
-		/* public function get message():String
-		   {
-		   return _message;
-		   }
-
-		   public function set message(v:String):void
-		   {
-		   _message = v;
-		 } */
 
 		public static function get instance():TwitPic
 		{
@@ -164,5 +131,6 @@ package twitter
 			}
 			return _instance;
 		}
+
 	}
 }

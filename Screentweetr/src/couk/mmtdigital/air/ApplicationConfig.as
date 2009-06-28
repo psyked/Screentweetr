@@ -23,6 +23,7 @@ package couk.mmtdigital.air
 
 		private var _isDefaultConfig:Boolean;
 		private var _isNewConfig:Boolean;
+		private var _isLoaded:Boolean;
 
 		private var _storageDirectory:String;
 
@@ -54,6 +55,11 @@ package couk.mmtdigital.air
 		{
 			var _file:File = new File("app-storage:/configuration.xml");
 			return _file.exists;
+		}
+
+		public function get loaded():Boolean
+		{
+			return _isLoaded;
 		}
 
 		public function get isDefaultConfig():Boolean
@@ -240,6 +246,8 @@ package couk.mmtdigital.air
 			{
 				createBlankConfigFile();
 			}
+			_isLoaded = true;
+			
 			dispatchEvent(new Event(ApplicationConfigEventType.CONFIG_FILE_LOADED, true, true));
 		}
 

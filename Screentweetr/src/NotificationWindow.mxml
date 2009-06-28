@@ -2,19 +2,18 @@
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="460" height="461"
 		   transparent="true" initialize="init(event);"
 		   creationComplete="onCreationComplete(event);" horizontalScrollPolicy="off"
-		   verticalScrollPolicy="off" xmlns:ns1="com.degrafa.*"
-		   xmlns:collections="com.degrafa.core.collections.*"
-		   xmlns:degrafa="http://www.degrafa.com/2007">
+		   verticalScrollPolicy="off">
 
 	<mx:Script>
 		<![CDATA[
+			import twitter.ServiceManager;
+			import couk.mmtdigital.air.events.ApplicationConfigEventType;
+			import couk.mmtdigital.air.ApplicationConfig;
 			import flash.net.navigateToURL;
 			import mx.binding.utils.BindingUtils;
-			//import twitter.TwitterSettings;
 			import com.pfp.utils.JPEGAsyncEncoder;
-			import twitter.TwitPic;
 			import config.ScreentweetrApplicationConfig;
-			import events.DTEvent;
+			import events.ScreentweetrEvent;
 			import mx.core.Application;
 			import caurina.transitions.Tweener;
 			import mx.events.FlexEvent;
@@ -22,10 +21,11 @@
 			private var errorMessage:String;
 			private var resultUrl:String;
 
-
 			private function init(e:FlexEvent = null):void
 			{
-
+				/**
+				 * 		Detect whether we're on a Mac or Windows Pc - and change the screen image accordingly.
+				 */
 				if (Capabilities.os.toString().toLowerCase().indexOf("windows") != -1)
 				{
 					mac_image.visible = false;
@@ -35,14 +35,27 @@
 					pc_image.visible = false;
 				}
 
-				Application.application.addEventListener(DTEvent.OPEN_NOTIFICATION, openNotification);
-				Application.application.addEventListener(DTEvent.CLOSE_NOTIFICATION, closeNotifcation);
+				Application.application.addEventListener(ScreentweetrEvent.OPEN_NOTIFICATION, openNotification);
+				Application.application.addEventListener(ScreentweetrEvent.CLOSE_NOTIFICATION, closeNotifcation);
 
-				TwitPic.instance.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-				TwitPic.instance.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
-
-				Screentweetr.instance.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+				ServiceManager.instance.addEventListener(ProgressEvent.PROGRESS, onUploadProgress);
+				ServiceManager.instance.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 				
+				Screentweetr.instance.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+
+				if (ApplicationConfig.instance.loaded)
+				{
+					onSettingsLoaded();
+				}
+				else
+				{
+					ApplicationConfig.instance.addEventListener(ApplicationConfigEventType.CONFIG_FILE_LOADED, onSettingsLoaded);
+				}
+			}
+
+			private function onSettingsLoaded(e:Event = null):void
+			{
+				ServiceManager.instance.serviceType = ApplicationConfig.instance.getSetting("defaultService");
 			}
 
 			private function onMessageBubbleCloseCompleteHandler(e:Event = null):void
@@ -54,15 +67,12 @@
 			private function onMessageChangeHandler(e:Event = null):void
 			{
 				character_count.text = (113 - message_text.text.length).toString();
-				//TwitPic.instance.message = message_text.text;
 				Screentweetr.instance.uploadMessage = message_text.text;
 			}
 
 			private function uploadCompleteDataHandler(event:DataEvent):void
 			{
 				Tweener.addTween(message_bubble, {alpha: 0, time: 0.5, onComplete: onMessageBubbleCloseCompleteHandler});
-
-				trace("Upload is complete, recieved response from TwitPic.");
 				var resultXML:XML = new XML(event.text);
 
 				errorMessage = resultXML.child("err")[0];
@@ -91,6 +101,19 @@
 
 			private function progressHandler(event:ProgressEvent):void
 			{
+				upload_progress.visible = true;
+				upload_progress_label.visible = true;
+
+				var progress:uint = Math.ceil((event.bytesLoaded / event.bytesTotal) * 100);
+				upload_progress.y = 208 + (100 - progress);
+				upload_progress.height = progress;
+				upload_progress_label.text = progress + "%";
+
+				process_label.text = "Encoding bitmap data...";
+			}
+
+			private function onUploadProgress(event:ProgressEvent):void
+			{
 
 				upload_progress.visible = true;
 				upload_progress_label.visible = true;
@@ -100,14 +123,7 @@
 				upload_progress.height = progress;
 				upload_progress_label.text = progress + "%";
 
-				if (event.target as TwitPic)
-				{
-					process_label.text = "Uploading image to TwitPic...";
-				}
-				else
-				{
-					process_label.text = "Encoding bitmap data...";
-				}
+				process_label.text = "Uploading image to " + ApplicationConfig.instance.getSetting("defaultService") + "...";
 			}
 
 			private function onCreationComplete(e:Event = null):void
@@ -160,7 +176,6 @@
 
 			private function openNotification(e:Event = null):void
 			{
-				//nativeWindow.orderToFront();
 				message_bubble.visible = false;
 				message_bubble.alpha = 0;
 				upload_progress.visible = false;
@@ -176,10 +191,10 @@
 				onMessageChangeHandler();
 				Tweener.addTween(message_bubble, {alpha: 1, time: 0.5});
 			}
-			
-			private function removeMessage(e:Event = null):void {
-				Tweener.addTween(message_bubble, {alpha: 0, time: 0.5, onComplete:onMessageBubbleCloseCompleteHandler});
-				//TwitPic.instance.message = null;
+
+			private function removeMessage(e:Event = null):void
+			{
+				Tweener.addTween(message_bubble, {alpha: 0, time: 0.5, onComplete: onMessageBubbleCloseCompleteHandler});
 				Screentweetr.instance.uploadMessage = null;
 			}
 		]]>
@@ -187,19 +202,21 @@
 	<mx:Image source="images/iMac-Dock-512.png" scaleContent="true" autoLoad="true" width="128"
 			  height="128" right="0" bottom="0" id="mac_image">
 	</mx:Image>
-	<mx:Image source="images/Monitor-Dock-512.png" scaleContent="true" autoLoad="true"
-			  width="128" height="128" right="0" bottom="-20" id="pc_image">
+	<mx:Image source="images/Monitor-Dock-512.png" scaleContent="true" autoLoad="true" width="128"
+			  height="128" right="0" bottom="-20" id="pc_image">
 	</mx:Image>
 	<mx:Canvas id="notification_box" verticalScrollPolicy="off" horizontalScrollPolicy="off"
 			   width="439" x="0" height="396" bottom="63">
 		<mx:Canvas x="19" y="0" width="295" height="180"
 				   backgroundImage="@Embed(source='images/message_bubble.png')" id="message_bubble">
-			<mx:Label x="12" y="8" text="Add your message here:" color="#584453"
-					  fontFamily="Arial" fontWeight="bold" paddingBottom="0" paddingLeft="0"
-					  paddingRight="0" paddingTop="0" fontSize="14" />
-			<mx:Text x="12" y="26" text="(Your images' TwitPic url will be added to the start of your message)" color="#222222"
-					  fontFamily="Arial" fontWeight="normal" paddingBottom="0" paddingLeft="0"
-					  paddingRight="0" paddingTop="0" fontSize="12"  width="265" height="35" fontStyle="italic"/>
+			<mx:Label x="12" y="8" text="Add your message here:" color="#584453" fontFamily="Arial"
+					  fontWeight="bold" paddingBottom="0" paddingLeft="0" paddingRight="0"
+					  paddingTop="0" fontSize="14" />
+			<mx:Text x="12" y="26"
+					 text="(Your images' TwitPic url will be added to the start of your message)"
+					 color="#222222" fontFamily="Arial" fontWeight="normal" paddingBottom="0"
+					 paddingLeft="0" paddingRight="0" paddingTop="0" fontSize="12" width="265"
+					 height="35" fontStyle="italic" />
 			<mx:Label x="191" y="127" text="characters left." color="#584453" fontFamily="Arial"
 					  fontWeight="bold" paddingBottom="0" paddingLeft="0" paddingRight="0"
 					  paddingTop="0" fontSize="12" textAlign="right" />
@@ -212,24 +229,29 @@
 						 fontSize="12" borderColor="#FFFFFF" width="264" x="13"
 						 text="Hey there, I've just uploaded my screenshot with Screentweetr."
 						 color="#584453" themeColor="#FFFFFF" />
-			<mx:LinkButton x="250" y="4.8" label="close" click="removeMessage()"/>
+			<mx:LinkButton x="250" y="4.8" label="close" click="removeMessage()" />
 		</mx:Canvas>
 		<mx:Canvas width="439" height="225" backgroundImage="@Embed(source='images/background.png')"
 				   right="0" bottom="0">
 			<mx:Button label="Upload to TwitPic" height="30"
-					   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.UPLOAD_IMAGE));}"
-					   icon="@Embed(source='images/go-up.png')" buttonMode="true" id="upload_btn"  x="141" y="135" width="190"/>
+					   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.UPLOAD_IMAGE));}"
+					   icon="@Embed(source='images/go-up.png')" buttonMode="true" id="upload_btn"
+					   x="141" y="135" width="190" />
 		</mx:Canvas>
 		<mx:Label text="Current username: {ScreentweetrApplicationConfig.getInstance().USERNAME}"
 				  textAlign="left" width="290" x="131" color="#000000" fontFamily="Arial"
-				  fontSize="12" id="current_username_text" y="266"  paddingBottom="6" paddingLeft="8" paddingRight="8" paddingTop="6"/>
+				  fontSize="12" id="current_username_text" y="266" paddingBottom="6" paddingLeft="8"
+				  paddingRight="8" paddingTop="6" />
 		<mx:Image height="18" click="closeNotifcation();" buttonMode="true" width="43"
 				  source="@Embed('/images/close_button.png')" x="382" y="204" />
-		<mx:Label text="Screentweetr" x="131" fontSize="20" color="#584453" y="201"  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8" paddingTop="6"/>
+		<mx:Label text="Screentweetr" x="131" fontSize="20" color="#584453" y="201"
+				  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
+				  paddingTop="6" />
 		<mx:Text 
 				 text="New bitmap data detected in clipboard - would you like to upload it to TwitPic?"
 				 height="51" selectable="false" width="290" x="132" color="#000000"
-				 fontFamily="Arial" fontSize="12" y="227"  paddingBottom="6" paddingLeft="8" paddingRight="8" paddingTop="6"/>
+				 fontFamily="Arial" fontSize="12" y="227" paddingBottom="6" paddingLeft="8"
+				 paddingRight="8" paddingTop="6" />
 		<mx:Image width="125" height="100" scaleContent="true" id="screenshot_img" x="11"
 				  verticalAlign="middle" horizontalAlign="center" y="211" />
 		<mx:Canvas x="11" width="125" height="100" backgroundColor="#000000" backgroundAlpha="0.3"
@@ -245,7 +267,8 @@
 				   buttonMode="true">
 		</mx:Canvas>
 		<mx:Button label="Settings" height="30"
-				   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_SETTINGS));}"
-				   icon="@Embed(source='images/applications-system.png')" buttonMode="true"  x="340" y="306.1"/>
+				   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));}"
+				   icon="@Embed(source='images/applications-system.png')" buttonMode="true" x="340"
+				   y="306.1" />
 	</mx:Canvas>
 </mx:Window>

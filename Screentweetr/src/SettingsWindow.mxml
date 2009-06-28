@@ -4,11 +4,13 @@
 		   verticalScrollPolicy="off" initialize="init(event);">
 	<mx:Script>
 		<![CDATA[
+			import twitter.types.ServiceTypes;
+			import twitter.ServiceManager;
 			import mx.events.FlexEvent;
 			import couk.mmtdigital.air.ApplicationConfig;
 			import couk.psyked.air.BindableApplicationInfo;
 			import config.ScreentweetrApplicationConfig;
-			import events.DTEvent;
+			import events.ScreentweetrEvent;
 
 			private function init(e:FlexEvent):void
 			{
@@ -33,10 +35,10 @@
 				
 				switch (ApplicationConfig.instance.getSetting("defaultService"))
 				{
-					case "TwitPic":
+					case ServiceTypes.TWIT_PIC:
 						twitpic_chk.selected = true;
 						break;
-					case "TweetPhoto":
+					case ServiceTypes.TWEET_PHOTO:
 						tweetphoto_chk.selected = true;
 						break;
 					default:
@@ -47,7 +49,7 @@
 
 			private function onClosing(e:Event):void
 			{
-				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.CLOSE_SETTINGS));
+				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.CLOSE_SETTINGS));
 			}
 
 			private function onSave(e:Event):void
@@ -84,6 +86,15 @@
 				{
 					trace(e.message);
 				}
+			}
+			
+			private function onTwitPicRadioButtonClick(e:Event):void {
+				ServiceManager.instance.serviceType = "";
+				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWIT_PIC);
+			}
+			
+			private function onTweetPhotoRadioButtonClick(e:Event):void {
+				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWEET_PHOTO);
 			}
 		]]>
 	</mx:Script>
@@ -128,9 +139,7 @@
 			<mx:Grid horizontalGap="4" verticalGap="4" width="100%">
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="TwitPic" selected="true" id="twitpic_chk" >
-							<mx:click>ApplicationConfig.instance.setSetting(&quot;defaultService&quot;, &quot;TwitPic&quot;);</mx:click>
-						</mx:RadioButton>
+						<mx:RadioButton label="TwitPic" selected="true" id="twitpic_chk" click="onTwitPicRadioButtonClick(event);" />
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
 						<mx:RadioButton label="yFrog" enabled="false" />
@@ -138,9 +147,7 @@
 				</mx:GridRow>
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="TweetPhoto" id="tweetphoto_chk">
-							<mx:click>ApplicationConfig.instance.setSetting(&quot;defaultService&quot;, &quot;TweetPhoto&quot;);</mx:click>
-						</mx:RadioButton>
+						<mx:RadioButton label="TweetPhoto" id="tweetphoto_chk" click="onTweetPhotoRadioButtonClick(event);" />
 					</mx:GridItem>
 					<mx:GridItem width="100%" height="100%">
 						<mx:RadioButton label="Mobypicture" enabled="false" />

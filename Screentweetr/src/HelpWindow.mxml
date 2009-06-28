@@ -6,7 +6,7 @@
 			import couk.mmtdigital.air.ApplicationConfig;
 			import mx.events.FlexEvent;
 			import flash.net.navigateToURL;
-			import events.DTEvent;
+			import events.ScreentweetrEvent;
 			
 			private function init(e:FlexEvent):void
 			{
@@ -37,12 +37,12 @@
 
 			private function onClosing(e:Event):void
 			{
-				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.CLOSE_HELP));
+				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.CLOSE_HELP));
 			}
 			
 			private function onOpenSettings(e:Event):void
 			{
-				NativeApplication.nativeApplication.dispatchEvent(new Event(DTEvent.OPEN_SETTINGS));
+				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));
 			}
 			
 			private function onGotoTwitter(e:Event):void
