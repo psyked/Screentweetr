@@ -89,11 +89,12 @@
 			}
 			
 			private function onTwitPicRadioButtonClick(e:Event):void {
-				ServiceManager.instance.serviceType = "";
+				ServiceManager.instance.serviceType = ServiceTypes.TWIT_PIC;
 				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWIT_PIC);
 			}
 			
 			private function onTweetPhotoRadioButtonClick(e:Event):void {
+				ServiceManager.instance.serviceType = ServiceTypes.TWEET_PHOTO;
 				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWEET_PHOTO);
 			}
 		]]>

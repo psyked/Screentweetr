@@ -1,7 +1,7 @@
 package twitter
 {
 	import couk.mmtdigital.air.ApplicationConfig;
-
+	
 	import flash.events.DataEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -10,142 +10,135 @@ package twitter
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.filesystem.File;
-	import flash.net.FileReference;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
-	import flash.net.URLVariables;
 
 	public class TweetPhoto extends EventDispatcher implements ITwitterService
 	{
 		private static var _instance:TweetPhoto;
-		private var _file:File;
-		private var message:String;
+		private var file:File;
+		private var APIKey:String = "02217aa0912b17d691abf29e271ebdc8";
 
 		public function TweetPhoto()
 		{
 			//
 		}
 
-		private function selectFile(f:File):void
+		public function uploadToService(_file:File, _message:String = null):void
 		{
-			_file = f;
-			_file.addEventListener(Event.CANCEL, cancelHandler);
-			_file.addEventListener(Event.COMPLETE, completeHandler);
-			_file.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-			_file.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			_file.addEventListener(Event.OPEN, openHandler);
-			_file.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			_file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-			_file.addEventListener(Event.SELECT, selectHandler);
-			_file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
-		}
+			file = _file;
+			file.addEventListener(Event.CANCEL, cancelHandler);
+			file.addEventListener(Event.COMPLETE, completeHandler);
+			file.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+			file.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			file.addEventListener(Event.OPEN, openHandler);
+			file.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+			file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 
-		public function uploadToService(file:File, _message:String = null):void
-		{
-			selectFile(file);
-			message = _message;
-			fileSelected();
+			var xmlString:String = '<UploadPost xmlns="http://tweetphotoapi.com" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">';
+			xmlString += '<ApiKey>' + APIKey + '</ApiKey>';
+			xmlString += '<Message>' + _message + '</Message>';
+			xmlString += '<MimeType>image/jpg</MimeType>';
+			xmlString += '<Password>' + ApplicationConfig.instance.getSetting("twitterPassword") + '</Password>';
+			xmlString += '<UserName>' + ApplicationConfig.instance.getSetting("twitterUsername") + '</UserName>';
+			xmlString += '</UploadPost>';
+
+			var urlRequest:URLRequest;
+
+			/* var urlVars:URLVariables = new URLVariables();
+			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
+			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword"); */
+
+			if (_message)
+			{
+				urlRequest = new URLRequest("http://tweetphotoapi.com/api/tpapi.svc/uploadandpost");
+				/* urlVars.message = _message; */
+			}
+			else
+			{
+				urlRequest = new URLRequest("http://tweetphotoapi.com/api/tpapi.svc/upload");
+			}
+			
+			var fs:FileStream = new FileStream();
+			fs.open(file, FileMode.READ);
+			//fs.bytesAvailable
+			//fs.close();
+			
+			urlRequest.requestHeaders = [new URLRequestHeader("Content-Type", "application/x-www-form-urlencoded"), new URLRequestHeader("Content-Length", fs.bytesAvailable.toString())];
+			fs.close();
+			urlRequest.method = URLRequestMethod.POST;
+			urlRequest.data = xmlString;
+
+			file.upload(urlRequest, 'media');
 		}
 
 		private function cancelHandler(event:Event):void
 		{
+			dispatchEvent(event.clone());
 			trace("cancelHandler: " + event);
 		}
 
 		private function completeHandler(event:Event):void
 		{
+			dispatchEvent(event.clone());
 			trace("completeHandler: " + event);
 		}
 
 		private function httpStatusHandler(event:HTTPStatusEvent):void
 		{
+			dispatchEvent(event.clone());
 			trace("httpStatusHandler: " + event);
 		}
 
 		private function ioErrorHandler(event:IOErrorEvent):void
 		{
+			dispatchEvent(event.clone());
 			trace("ioErrorHandler: " + event);
 		}
 
 		private function openHandler(event:Event):void
 		{
+			dispatchEvent(event.clone());
 			trace("openHandler: " + event);
 		}
 
 		private function progressHandler(event:ProgressEvent):void
 		{
-			var file:FileReference = FileReference(event.target);
 			dispatchEvent(event.clone());
 			trace("Uploading", Math.round((event.bytesLoaded / event.bytesTotal) * 100), "%");
 		}
 
 		private function securityErrorHandler(event:SecurityErrorEvent):void
 		{
+			dispatchEvent(event.clone());
 			trace("securityErrorHandler: " + event);
 		}
-
-		private function selectHandler(event:Event):void
-		{
-			var file:FileReference = FileReference(event.target);
-			trace("selectHandler: name=" + file.name);
-		}
-
-		private function fileSelected(event:Event = null):void
-		{
-			var urlRequest:URLRequest;
-
-			var urlVars:URLVariables = new URLVariables();
-			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
-			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword");
-			if (message)
-			{
-				urlRequest = new URLRequest("http://tweetphotoapi.com/api/tpapi.svc/uploadandpost");
-				urlVars.message = message;
-			}
-			else
-			{
-				urlRequest = new URLRequest("http://tweetphotoapi.com/api/tpapi.svc/upload");
-			}
-
-			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.data = urlVars;
-
-			_file.upload(urlRequest, 'media');
-		}
-
 
 		private function uploadCompleteDataHandler(event:DataEvent):void
 		{
 			trace(event.data);
-			
+			//trace("Upload is complete, recieved response from TwitPic.");
 			var resultXML:XML = new XML(event.text);
 
 			var errorMessage:String = resultXML.child("err")[0];
 			var resultUrl:String = resultXML.child("mediaurl")[0];
 
-			if (resultUrl)
-			{
-				trace("Opening new window to show TweetPhoto results.");
-			}
-			else
-			{
-				trace("FAIL WHALE! :", errorMessage);
-			}
-
-			_file.removeEventListener(Event.CANCEL, cancelHandler);
-			_file.removeEventListener(Event.COMPLETE, completeHandler);
-			_file.removeEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-			_file.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			_file.removeEventListener(Event.OPEN, openHandler);
-			_file.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
-			_file.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-			_file.removeEventListener(Event.SELECT, selectHandler);
-			_file.removeEventListener(Event.COMPLETE, uploadCompleteDataHandler);
-			_file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+			file.removeEventListener(Event.CANCEL, cancelHandler);
+			file.removeEventListener(Event.COMPLETE, completeHandler);
+			file.removeEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+			file.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			file.removeEventListener(Event.OPEN, openHandler);
+			file.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+			file.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+			file.removeEventListener(Event.COMPLETE, uploadCompleteDataHandler);
+			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 
 			dispatchEvent(event.clone());
 		}
-
 
 		public static function get instance():TweetPhoto
 		{
