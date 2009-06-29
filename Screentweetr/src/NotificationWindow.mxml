@@ -20,6 +20,9 @@
 
 			private var errorMessage:String;
 			private var resultUrl:String;
+			
+			[Bindable]
+			private var serviceName:String;
 
 			private function init(e:FlexEvent = null):void
 			{
@@ -56,6 +59,12 @@
 			private function onSettingsLoaded(e:Event = null):void
 			{
 				ServiceManager.instance.serviceType = ApplicationConfig.instance.getSetting("defaultService");
+				ApplicationConfig.instance.addEventListener(Event.CHANGE, onServiceChange);
+				serviceName = ApplicationConfig.instance.getSetting("defaultService");
+			}
+			
+			private function onServiceChange(e:Event):void {
+					serviceName = ApplicationConfig.instance.getSetting("defaultService");
 			}
 
 			private function onMessageBubbleCloseCompleteHandler(e:Event = null):void
@@ -213,7 +222,7 @@
 					  fontWeight="bold" paddingBottom="0" paddingLeft="0" paddingRight="0"
 					  paddingTop="0" fontSize="14" />
 			<mx:Text x="12" y="26"
-					 text="(Your images' TwitPic url will be added to the start of your message)"
+					 text="{'(Your images\' '+serviceName+' url will be added to the start of your message)'}"
 					 color="#222222" fontFamily="Arial" fontWeight="normal" paddingBottom="0"
 					 paddingLeft="0" paddingRight="0" paddingTop="0" fontSize="12" width="265"
 					 height="35" fontStyle="italic" />
@@ -233,7 +242,7 @@
 		</mx:Canvas>
 		<mx:Canvas width="439" height="225" backgroundImage="@Embed(source='images/background.png')"
 				   right="0" bottom="0">
-			<mx:Button label="Upload to TwitPic" height="30"
+			<mx:Button label="Upload to {serviceName}" height="30"
 					   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.UPLOAD_IMAGE));}"
 					   icon="@Embed(source='images/go-up.png')" buttonMode="true" id="upload_btn"
 					   x="141" y="135" width="190" />
@@ -248,7 +257,7 @@
 				  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
 				  paddingTop="6" />
 		<mx:Text 
-				 text="New bitmap data detected in clipboard - would you like to upload it to TwitPic?"
+				 text="New bitmap data detected in clipboard - would you like to upload it to {serviceName}?"
 				 height="51" selectable="false" width="290" x="132" color="#000000"
 				 fontFamily="Arial" fontSize="12" y="227" paddingBottom="6" paddingLeft="8"
 				 paddingRight="8" paddingTop="6" />

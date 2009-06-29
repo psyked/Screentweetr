@@ -1,7 +1,7 @@
 package couk.mmtdigital.air
 {
 	import couk.mmtdigital.air.events.ApplicationConfigEventType;
-
+	
 	import flash.data.EncryptedLocalStore;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -11,7 +11,7 @@ package couk.mmtdigital.air
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
-
+	
 	import mx.events.FlexEvent;
 
 	public class ApplicationConfig extends EventDispatcher
@@ -247,7 +247,7 @@ package couk.mmtdigital.air
 				createBlankConfigFile();
 			}
 			_isLoaded = true;
-			
+
 			dispatchEvent(new Event(ApplicationConfigEventType.CONFIG_FILE_LOADED, true, true));
 		}
 
@@ -465,6 +465,7 @@ package couk.mmtdigital.air
 			}
 			writeConfigFile();
 			trace(configFile);
+			dispatchEvent(new Event(Event.CHANGE));
 		}
 
 		private function writeConfigFile():void

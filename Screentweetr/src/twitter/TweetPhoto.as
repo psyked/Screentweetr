@@ -10,11 +10,9 @@ package twitter
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
 	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 
 	public class TweetPhoto extends EventDispatcher implements ITwitterService
 	{
@@ -39,39 +37,25 @@ package twitter
 			file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 
-			var xmlString:String = '<UploadPost xmlns="http://tweetphotoapi.com" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">';
-			xmlString += '<ApiKey>' + APIKey + '</ApiKey>';
-			xmlString += '<Message>' + _message + '</Message>';
-			xmlString += '<MimeType>image/jpg</MimeType>';
-			xmlString += '<Password>' + ApplicationConfig.instance.getSetting("twitterPassword") + '</Password>';
-			xmlString += '<UserName>' + ApplicationConfig.instance.getSetting("twitterUsername") + '</UserName>';
-			xmlString += '</UploadPost>';
-
 			var urlRequest:URLRequest;
 
-			/* var urlVars:URLVariables = new URLVariables();
+			var urlVars:URLVariables = new URLVariables();
 			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
-			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword"); */
-
+			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword");
+			urlVars.api_key = APIKey;
+			
 			if (_message)
 			{
-				urlRequest = new URLRequest("http://tweetphotoapi.com/api/tpapi.svc/uploadandpost");
-				/* urlVars.message = _message; */
+				urlRequest = new URLRequest("http://www.tweetphoto.com/uploadandpostapiwithkey.php");
+				urlVars.message = _message;
 			}
 			else
 			{
-				urlRequest = new URLRequest("http://tweetphotoapi.com/api/tpapi.svc/upload");
+				urlRequest = new URLRequest("http://www.tweetphoto.com/uploadapiwithkey.php");
 			}
-			
-			var fs:FileStream = new FileStream();
-			fs.open(file, FileMode.READ);
-			//fs.bytesAvailable
-			//fs.close();
-			
-			urlRequest.requestHeaders = [new URLRequestHeader("Content-Type", "application/x-www-form-urlencoded"), new URLRequestHeader("Content-Length", fs.bytesAvailable.toString())];
-			fs.close();
+
 			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.data = xmlString;
+			urlRequest.data = urlVars;
 
 			file.upload(urlRequest, 'media');
 		}

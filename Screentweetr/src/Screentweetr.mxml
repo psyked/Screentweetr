@@ -3,6 +3,7 @@
 				initialize="init(event);" creationComplete="creationComplete(event);">
 	<mx:Script>
 		<![CDATA[
+			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
 			import couk.psyked.managers.types.EncoderManagerTypes;
 			import couk.psyked.managers.EncoderManager;
@@ -105,7 +106,7 @@
 
 				if (!ApplicationConfig.instance.getSetting("defaultService"))
 				{
-					ApplicationConfig.instance.setSetting("defaultService", "TwitPic");
+					ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWEET_PHOTO);
 				}
 
 				notification = new NotificationWindow();

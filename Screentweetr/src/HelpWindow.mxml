@@ -70,7 +70,7 @@
 				 fontSize="12" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" selectable="false">
 			<mx:htmlText>
 				<![CDATA[Once you've taken a screenshot a notification window will appear in the bottom right of your screen. 
-<br/>To add a message click on the bird in the notification box, and then upload your screenshot with the 'Upload to TwitPic' button.]]>
+<br/>To add a message click on the bird in the notification box, and then upload your screenshot with the 'Upload' button.]]>
 			</mx:htmlText>
 		</mx:Text>
 		<mx:CheckBox x="10" y="323" label="Show welcome screen on startup." fontSize="11" selected="true"  buttonMode="true" id="show_window" click="onPress(event);"/>
