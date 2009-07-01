@@ -1,7 +1,7 @@
 package twitter
 {
 	import couk.mmtdigital.air.ApplicationConfig;
-	
+
 	import flash.events.DataEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -13,7 +13,7 @@ package twitter
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
-	
+
 	import ru.inspirit.net.MultipartURLLoader;
 
 	public class ScreenTweet extends EventDispatcher implements ITwitterService
@@ -39,31 +39,6 @@ package twitter
 			file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 
-			/* var fileStream:FileStream = new FileStream();
-			   fileStream.open(_file, FileMode.READ);
-			   var str:String = fileStream.readUTFBytes(fileStream.bytesAvailable);
-			 fileStream.close(); */ /* var fr:FileReference = new FileReference();
-			 fr.load(); */
-		//	trace(file, file.data, _file, _file.data)
-
-			//trace(str);
-			/* var urlRequest:URLRequest;
-
-			   var urlVars:URLVariables = new URLVariables();
-			   urlVars.uname = ApplicationConfig.instance.getSetting("twitterUsername");
-			   urlVars.upass = ApplicationConfig.instance.getSetting("twitterPassword");
-			   urlVars.apikey = APIKey;
-			   urlVars.privacy = "private";
-			   //urlVars.image = _file.data
-			   urlRequest = new URLRequest("http://screentweet.com/api/uploadandpost/");
-			   urlVars.message = _message;
-			   urlRequest.method = URLRequestMethod.POST;
-			   urlRequest.data = urlVars;
-			   urlRequest.contentType = "image/jpeg";
-			   //trace(file.nativePath);
-			   file.upload(urlRequest, 'image');
-			 */
-
 			var data:ByteArray = new ByteArray();
 			var inStream:FileStream = new FileStream();
 			inStream.open(file, FileMode.READ);
@@ -77,13 +52,14 @@ package twitter
 			if (_message)
 			{
 				ml.addVariable("message", _message);
-			} else {
-				ml.addVariable("message", "");
+				ml.addVariable("privacy", "public");
 			}
-			ml.addVariable("privacy", "private");
-			//ml.addVariable("Filename", "screenshot.jpg");
+			else
+			{
+				ml.addVariable("message", "");
+				ml.addVariable("privacy", "private");
+			}
 			ml.addFile(data, "screenshot.jpg", "image", "image/jpeg");
-			//ml.addFile(file.data as ByteArray, "upload.jpg", "image", "image/jpeg");
 			ml.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); // never catched
 			ml.load('http://screentweet.com/api/uploadandpost/');
 		}

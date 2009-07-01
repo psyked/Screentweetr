@@ -6,6 +6,7 @@
 
 	<mx:Script>
 		<![CDATA[
+			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
 			import couk.mmtdigital.air.events.ApplicationConfigEventType;
 			import couk.mmtdigital.air.ApplicationConfig;
@@ -20,7 +21,7 @@
 
 			private var errorMessage:String;
 			private var resultUrl:String;
-			
+
 			[Bindable]
 			private var serviceName:String;
 
@@ -43,7 +44,7 @@
 
 				ServiceManager.instance.addEventListener(ProgressEvent.PROGRESS, onUploadProgress);
 				ServiceManager.instance.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
-				
+
 				Screentweetr.instance.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 
 				if (ApplicationConfig.instance.loaded)
@@ -62,9 +63,10 @@
 				ApplicationConfig.instance.addEventListener(Event.CHANGE, onServiceChange);
 				serviceName = ApplicationConfig.instance.getSetting("defaultService");
 			}
-			
-			private function onServiceChange(e:Event):void {
-					serviceName = ApplicationConfig.instance.getSetting("defaultService");
+
+			private function onServiceChange(e:Event):void
+			{
+				serviceName = ApplicationConfig.instance.getSetting("defaultService");
 			}
 
 			private function onMessageBubbleCloseCompleteHandler(e:Event = null):void
@@ -82,13 +84,24 @@
 			private function uploadCompleteDataHandler(event:DataEvent):void
 			{
 				Tweener.addTween(message_bubble, {alpha: 0, time: 0.5, onComplete: onMessageBubbleCloseCompleteHandler});
+
 				var resultXML:XML = new XML(event.text);
 
-				errorMessage = resultXML.child("err")[0];
-				resultUrl = resultXML.child("mediaurl")[0];
+				if (ServiceManager.instance.serviceType == ServiceTypes.SCREEN_TWEET)
+				{
+					errorMessage = resultXML.child("err")[0];
+					resultUrl = resultXML.child("shorturl")[0];
+				}
+				else
+				{
+					errorMessage = resultXML.child("err")[0];
+					resultUrl = resultXML.child("mediaurl")[0];
+				}
 
 				upload_progress.visible = false;
 				upload_progress_label.visible = false;
+
+				trace(event.data);
 
 				if (resultUrl)
 				{

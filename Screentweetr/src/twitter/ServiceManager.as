@@ -13,6 +13,7 @@ package twitter
 		private static var _instance:ServiceManager;
 
 		private var twitterService:ITwitterService;
+		private var _serviceType:String;
 
 		public function ServiceManager(target:IEventDispatcher = null)
 		{
@@ -28,6 +29,9 @@ package twitter
 				twitterService.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 				twitterService = null;
 			}
+			
+			_serviceType = str;
+			
 			switch (str)
 			{
 				case ServiceTypes.TWIT_PIC:
@@ -44,6 +48,10 @@ package twitter
 			}
 			twitterService.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			twitterService.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+		}
+		
+		public function get serviceType():String {
+			return _serviceType;
 		}
 
 		private function progressHandler(e:ProgressEvent):void
