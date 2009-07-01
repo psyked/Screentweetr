@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
-  <version>0.6</version>
-  <url>http://www.psyked.co.uk/airapps/Screentweetr06.air</url>
+  <version>0.7</version>
+  <url>http://www.psyked.co.uk/airapps/Screentweetr07.air</url>
   <description><![CDATA[Screentweetr
+Version 0.7:
+ * Added support for TweetPhoto.
 Version 0.6:
  * Expanded services to use TweetPhoto by default instead of TwitPic.
 Version 0.5:
