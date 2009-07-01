@@ -5,7 +5,7 @@ package twitter
 	import flash.events.IEventDispatcher;
 	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
-
+	
 	import twitter.types.ServiceTypes;
 
 	public class ServiceManager extends EventDispatcher implements ITwitterService
@@ -35,6 +35,9 @@ package twitter
 					break;
 				case ServiceTypes.TWEET_PHOTO:
 					twitterService = TweetPhoto.instance;
+					break;
+				case ServiceTypes.SCREEN_TWEET:
+					twitterService = ScreenTweet.instance;
 					break;
 				default:
 					break;

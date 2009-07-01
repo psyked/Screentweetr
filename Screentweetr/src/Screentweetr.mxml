@@ -129,7 +129,7 @@
 			private function onEncodingComplete(e:JPEGAsyncCompleteEvent):void
 			{
 				trace("Screentweetr onEncodingComplete");
-				var newFile:File = File.createTempFile();
+				var newFile:File = File.applicationStorageDirectory.resolvePath("screenshot.jpg");//createTempFile();
 				var newFileStream:FileStream = new FileStream();
 				newFileStream.open(newFile, FileMode.WRITE);
 				newFileStream.writeBytes(e.ImageData);
