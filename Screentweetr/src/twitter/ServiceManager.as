@@ -43,6 +43,9 @@ package twitter
 				case ServiceTypes.SCREEN_TWEET:
 					twitterService = ScreenTweet.instance;
 					break;
+				case ServiceTypes.YFROG:
+					twitterService = YFrog.instance;
+					break;
 				default:
 					break;
 			}
