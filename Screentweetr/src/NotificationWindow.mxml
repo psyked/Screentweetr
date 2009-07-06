@@ -92,6 +92,11 @@
 					errorMessage = resultXML.child("err")[0];
 					resultUrl = resultXML.child("shorturl")[0];
 				}
+				else if (ServiceManager.instance.serviceType == ServiceTypes.MOBYPICTURE)
+				{
+					errorMessage = resultXML.child("result")[0].@code;
+					resultUrl = resultXML.child("url")[0];
+				}
 				else
 				{
 					errorMessage = resultXML.child("err")[0];
@@ -126,8 +131,8 @@
 				upload_progress.visible = true;
 				upload_progress_label.visible = true;
 
-				var progress:uint = Math.ceil((event.bytesLoaded / event.bytesTotal) * 100);
-				upload_progress.y = 208 + (100 - progress);
+				var progress:uint = Math.round((event.bytesLoaded / event.bytesTotal) * 100);
+				upload_progress.y = 100 + (100 - progress);
 				upload_progress.height = progress;
 				upload_progress_label.text = progress + "%";
 
@@ -136,12 +141,11 @@
 
 			private function onUploadProgress(event:ProgressEvent):void
 			{
-
 				upload_progress.visible = true;
 				upload_progress_label.visible = true;
 
-				var progress:uint = Math.ceil((event.bytesLoaded / event.bytesTotal) * 100);
-				upload_progress.y = 208 + (100 - progress);
+				var progress:uint = Math.round((event.bytesLoaded / event.bytesTotal) * 100);
+				upload_progress.y = 100 + (100 - progress);
 				upload_progress.height = progress;
 				upload_progress_label.text = progress + "%";
 
@@ -161,19 +165,31 @@
 			{
 				if (ScreentweetrApplicationConfig.getInstance().USERNAME)
 				{
-					current_username_text.text = "Current username: " + ScreentweetrApplicationConfig.getInstance().USERNAME;
+					if (current_username_text)
+					{
+						current_username_text.text = "Current username: " + ScreentweetrApplicationConfig.getInstance().USERNAME;
+					}
 				}
 				else
 				{
-					current_username_text.text = "No Twitter credentials saved!";
+					if (current_username_text)
+					{
+						current_username_text.text = "No Twitter credentials saved!";
+					}
 				}
 				if (ScreentweetrApplicationConfig.getInstance().USERNAME && ScreentweetrApplicationConfig.getInstance().PASSWORD)
 				{
-					upload_btn.enabled = true;
+					if (upload_btn)
+					{
+						upload_btn.enabled = true;
+					}
 				}
 				else
 				{
-					upload_btn.enabled = false;
+					if (upload_btn)
+					{
+						upload_btn.enabled = false;
+					}
 				}
 			}
 
@@ -181,11 +197,17 @@
 			{
 				if (ScreentweetrApplicationConfig.getInstance().USERNAME && ScreentweetrApplicationConfig.getInstance().PASSWORD)
 				{
-					upload_btn.enabled = true;
+					if (upload_btn)
+					{
+						upload_btn.enabled = true;
+					}
 				}
 				else
 				{
-					upload_btn.enabled = false;
+					if (upload_btn)
+					{
+						upload_btn.enabled = false;
+					}
 				}
 			}
 
@@ -200,9 +222,20 @@
 			{
 				message_bubble.visible = false;
 				message_bubble.alpha = 0;
-				upload_progress.visible = false;
+				if (upload_progress)
+				{
+					upload_progress.visible = false;
+				}
 				nativeWindow.alwaysInFront = true;
-				screenshot_img.source = new Bitmap(Screentweetr.bitmapdata);
+				if (Screentweetr.bitmapdata)
+				{
+					viewstack1.selectedIndex = 1;
+					screenshot_img.source = new Bitmap(Screentweetr.bitmapdata);
+				}
+				else
+				{
+					viewstack1.selectedIndex = 0;
+				}
 				Tweener.addTween(notification_box, {time: 1, delay: 1, alpha: 1});
 				Tweener.addTween(nativeWindow, {time: 1, y: Screen.mainScreen.visibleBounds.height - nativeWindow.height});
 			}
@@ -255,42 +288,70 @@
 		</mx:Canvas>
 		<mx:Canvas width="439" height="225" backgroundImage="@Embed(source='images/background.png')"
 				   right="0" bottom="0">
-			<mx:Button label="Upload to {serviceName}" height="30"
-					   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.UPLOAD_IMAGE));}"
-					   icon="@Embed(source='images/go-up.png')" buttonMode="true" id="upload_btn"
-					   x="141" y="135" width="190" />
 		</mx:Canvas>
-		<mx:Label text="Current username: {ScreentweetrApplicationConfig.getInstance().USERNAME}"
-				  textAlign="left" width="290" x="131" color="#000000" fontFamily="Arial"
-				  fontSize="12" id="current_username_text" y="266" paddingBottom="6" paddingLeft="8"
-				  paddingRight="8" paddingTop="6" />
-		<mx:Image height="18" click="closeNotifcation();" buttonMode="true" width="43"
-				  source="@Embed('/images/close_button.png')" x="382" y="204" />
-		<mx:Label text="Screentweetr" x="131" fontSize="20" color="#584453" y="201"
-				  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
-				  paddingTop="6" />
-		<mx:Text 
-				 text="New bitmap data detected in clipboard - would you like to upload it to {serviceName}?"
-				 height="51" selectable="false" width="290" x="132" color="#000000"
-				 fontFamily="Arial" fontSize="12" y="227" paddingBottom="6" paddingLeft="8"
-				 paddingRight="8" paddingTop="6" />
-		<mx:Image width="125" height="100" scaleContent="true" id="screenshot_img" x="11"
-				  verticalAlign="middle" horizontalAlign="center" y="211" />
-		<mx:Canvas x="11" width="125" height="100" backgroundColor="#000000" backgroundAlpha="0.3"
-				   id="upload_progress" cornerRadius="8" y="211">
-		</mx:Canvas>
-		<mx:Label id="upload_progress_label" fontSize="32" width="104" textAlign="right"
-				  color="#000000" x="25" fontFamily="Arial" fontWeight="bold" y="236" />
-		<mx:Text fontFamily="Arial" color="#584453" fontSize="11" x="11" width="125"
-				 selectable="false" textAlign="center" id="process_label" paddingBottom="0"
-				 paddingLeft="0" paddingRight="0" paddingTop="0" height="32" y="312" />
-		<mx:Canvas x="256" y="173" width="80" height="64"
-				   backgroundImage="@Embed(source='images/tweet_bird.png')" click="onBirdClick();"
-				   buttonMode="true">
-		</mx:Canvas>
-		<mx:Button label="Settings" height="30"
-				   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));}"
-				   icon="@Embed(source='images/applications-system.png')" buttonMode="true" x="340"
-				   y="306.1" />
+		<mx:ViewStack y="111" id="viewstack1" height="285" creationPolicy="all">
+			<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off">
+				<mx:Label text="Screentweetr" x="7" fontSize="20" color="#584453" y="90"
+						  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
+						  paddingTop="6" />
+				<mx:Text y="116"
+						 text="Easy, tiger. You need to have a screenshot to upload before you can actually go and, you know, upload it."
+						 fontSize="12" color="#000000" paddingBottom="6" paddingLeft="8"
+						 paddingRight="8" paddingTop="6" width="418" x="7"  selectable="false"/>
+				<mx:Text y="150"
+						 text="Check out the help / instructions screen to find out how to use Screentweetr, and set your preferences in the Settings screen."
+						 fontSize="12" color="#000000" paddingBottom="6" paddingLeft="8"
+						 paddingRight="8" paddingTop="6" width="418" x="7"  selectable="false"/>
+				<mx:Button label="Open settings window" height="26"
+						   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));}"
+						   icon="@Embed(source='images/applications-system.png')" buttonMode="true"
+						   y="195" width="196" x="224"/>
+				<mx:Button label="Open Help / Instructions" height="26"
+						   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_HELP));}"
+						   icon="@Embed(source='images/help.png')" buttonMode="true" y="195"
+						   width="196" x="18"/>
+				<mx:Image height="18" click="closeNotifcation();" buttonMode="true" width="43"
+						  source="@Embed('/images/close_button.png')" x="382" y="93" />
+			</mx:Canvas>
+			<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off">
+				<mx:Button label="Upload to {serviceName}" height="30"
+						   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.UPLOAD_IMAGE));}"
+						   icon="@Embed(source='images/go-up.png')" buttonMode="true"
+						   id="upload_btn" x="141" y="195" width="190" />
+				<mx:Label 
+						  text="Current username: {ScreentweetrApplicationConfig.getInstance().USERNAME}"
+						  textAlign="left" width="290" x="131" color="#000000" fontFamily="Arial"
+						  fontSize="12" id="current_username_text" y="155" paddingBottom="6"
+						  paddingLeft="8" paddingRight="8" paddingTop="6" />
+				<mx:Image height="18" click="closeNotifcation();" buttonMode="true" width="43"
+						  source="@Embed('/images/close_button.png')" x="382" y="93" />
+				<mx:Label text="Screentweetr" x="131" fontSize="20" color="#584453" y="90"
+						  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
+						  paddingTop="6" />
+				<mx:Text 
+						 text="New bitmap data detected in clipboard - would you like to upload it to {serviceName}?"
+						 height="51" selectable="false" width="290" x="132" color="#000000"
+						 fontFamily="Arial" fontSize="12" y="116" paddingBottom="6" paddingLeft="8"
+						 paddingRight="8" paddingTop="6" />
+				<mx:Image width="125" height="100" scaleContent="true" id="screenshot_img" x="11"
+						  verticalAlign="middle" horizontalAlign="center" y="100" />
+				<mx:Canvas x="11" width="125" height="100" backgroundColor="#000000"
+						   backgroundAlpha="0.3" id="upload_progress" cornerRadius="8" y="100">
+				</mx:Canvas>
+				<mx:Label id="upload_progress_label" fontSize="32" width="104" textAlign="right"
+						  color="#000000" x="25" fontFamily="Arial" fontWeight="bold" y="125" />
+				<mx:Text fontFamily="Arial" color="#584453" fontSize="11" x="11" width="125"
+						 selectable="false" textAlign="center" id="process_label" paddingBottom="0"
+						 paddingLeft="0" paddingRight="0" paddingTop="0" height="32" y="201" />
+				<mx:Canvas x="256" y="62" width="80" height="64"
+						   backgroundImage="@Embed(source='images/tweet_bird.png')"
+						   click="onBirdClick();" buttonMode="true">
+				</mx:Canvas>
+				<mx:Button label="Settings" height="30"
+						   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));}"
+						   icon="@Embed(source='images/applications-system.png')" buttonMode="true"
+						   x="340" y="195.1" />
+			</mx:Canvas>
+		</mx:ViewStack>
 	</mx:Canvas>
 </mx:Window>

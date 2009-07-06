@@ -46,6 +46,12 @@ package twitter
 				case ServiceTypes.YFROG:
 					twitterService = YFrog.instance;
 					break;
+				case ServiceTypes.TWITGOO:
+					twitterService = Twitgoo.instance;
+					break;
+				case ServiceTypes.MOBYPICTURE:
+					twitterService = Mobypicture.instance;
+					break;
 				default:
 					break;
 			}
