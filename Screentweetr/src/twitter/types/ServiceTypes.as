@@ -8,6 +8,8 @@ package twitter.types
 		public static var YFROG:String = "YFrog";
 		public static var TWITGOO:String = "Twitgoo";
 		public static var MOBYPICTURE:String = "Mobypicture";
+		public static var IMG_LY:String = "img.ly";
+		public static var POSTEROUS:String = "Posterous";
 		
 		public function ServiceTypes()
 		{

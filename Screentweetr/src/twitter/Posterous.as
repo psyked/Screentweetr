@@ -10,18 +10,18 @@ package twitter
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.filesystem.File;
+	import flash.net.FileReference;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 
-	public class Mobypicture extends EventDispatcher implements ITwitterService
+	public class Posterous extends EventDispatcher implements ITwitterService
 	{
 
-		private static var _instance:Mobypicture;
+		private static var _instance:Posterous;
 		private var file:File;
-		private var developerKey:String = "NeZwjPKVT34a2P4D";
 
-		public function Mobypicture()
+		public function Posterous()
 		{
 			//
 		}
@@ -41,28 +41,25 @@ package twitter
 			var urlRequest:URLRequest;
 
 			var urlVars:URLVariables = new URLVariables();
-			urlVars.u = ApplicationConfig.instance.getSetting("twitterUsername");
-			urlVars.p = ApplicationConfig.instance.getSetting("twitterPassword");
-			urlVars.k = developerKey;
-			urlVars.s = "twitter";
-			urlVars.action = "postMediaUrl";
-			urlVars.format = "xml";
-			urlRequest = new URLRequest("http://api.mobypicture.com/");
-
+			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
+			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword");
+			urlVars.source = "Screentweetr";
+			urlVars.sourceLink = "http://www.psyked.co.uk/screentweetr";
+			
 			if (_message)
 			{
-				urlVars.action = "postMediaUrl";
-				urlVars.t = _message;
+				urlRequest = new URLRequest("http://posterous.com/api/uploadAndPost");
+				urlVars.message = _message;
 			}
 			else
 			{
-				urlVars.action = "postMedia";
+				urlRequest = new URLRequest("http://posterous.com/api/upload");
 			}
 
 			urlRequest.method = URLRequestMethod.POST;
 			urlRequest.data = urlVars;
 
-			file.upload(urlRequest, 'i');
+			file.upload(urlRequest, 'media');
 		}
 
 		private function cancelHandler(event:Event):void
@@ -109,12 +106,11 @@ package twitter
 
 		private function uploadCompleteDataHandler(event:DataEvent):void
 		{
-			//trace(event.data);
-			//trace("Upload is complete, recieved response from Mobypicture.");
+			//trace("Upload is complete, recieved response from Posterous.");
 			var resultXML:XML = new XML(event.text);
 
-			var errorMessage:String = resultXML.child("result")[0].@code;
-			var resultUrl:String = resultXML.child("url")[0];
+			var errorMessage:String = resultXML.child("err")[0];
+			var resultUrl:String = resultXML.child("mediaurl")[0];
 
 			file.removeEventListener(Event.CANCEL, cancelHandler);
 			file.removeEventListener(Event.COMPLETE, completeHandler);
@@ -124,16 +120,16 @@ package twitter
 			file.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			file.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			file.removeEventListener(Event.COMPLETE, uploadCompleteDataHandler);
-			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); 
 
 			dispatchEvent(event.clone());
 		}
 
-		public static function get instance():Mobypicture
+		public static function get instance():Posterous
 		{
 			if (!_instance)
 			{
-				_instance = new Mobypicture();
+				_instance = new Posterous();
 			}
 			return _instance;
 		}

@@ -1,5 +1,7 @@
 package twitter
 {
+	import couk.mmtdigital.air.ApplicationConfig;
+	
 	import flash.events.DataEvent;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
@@ -29,9 +31,9 @@ package twitter
 				twitterService.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 				twitterService = null;
 			}
-			
+
 			_serviceType = str;
-			
+
 			switch (str)
 			{
 				case ServiceTypes.TWIT_PIC:
@@ -52,14 +54,23 @@ package twitter
 				case ServiceTypes.MOBYPICTURE:
 					twitterService = Mobypicture.instance;
 					break;
+				case ServiceTypes.IMG_LY:
+					twitterService = ImgLy.instance;
+					break;
+				case ServiceTypes.POSTEROUS:
+					twitterService = Posterous.instance;
+					break;
 				default:
+					ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWEET_PHOTO);
+					twitterService = TweetPhoto.instance;
 					break;
 			}
 			twitterService.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			twitterService.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 		}
-		
-		public function get serviceType():String {
+
+		public function get serviceType():String
+		{
 			return _serviceType;
 		}
 
