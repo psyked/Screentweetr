@@ -72,6 +72,7 @@
 			private function onMessageBubbleCloseCompleteHandler(e:Event = null):void
 			{
 				message_bubble.visible = false;
+				message_notification.visible = true;
 				message_text.text = "";
 			}
 
@@ -222,6 +223,8 @@
 			{
 				message_bubble.visible = false;
 				message_bubble.alpha = 0;
+				message_notification.visible = true;
+				Tweener.addTween(message_notification, {alpha: 1, time: 0.5});
 				if (upload_progress)
 				{
 					upload_progress.visible = false;
@@ -245,11 +248,13 @@
 				message_bubble.visible = true;
 				onMessageChangeHandler();
 				Tweener.addTween(message_bubble, {alpha: 1, time: 0.5});
+				Tweener.addTween(message_notification, {alpha: 0, time: 0.5, onComplete:function(){message_notification.visible = false}});
 			}
 
 			private function removeMessage(e:Event = null):void
 			{
 				Tweener.addTween(message_bubble, {alpha: 0, time: 0.5, onComplete: onMessageBubbleCloseCompleteHandler});
+				Tweener.addTween(message_notification, {alpha: 1, time: 0.5});
 				Screentweetr.instance.uploadMessage = null;
 			}
 		]]>
@@ -353,5 +358,6 @@
 						   x="340" y="195.1" />
 			</mx:Canvas>
 		</mx:ViewStack>
+		<mx:Image x="258" y="120" source="@Embed(source='images/add_message_image.png')" id="message_notification"/>
 	</mx:Canvas>
 </mx:Window>
