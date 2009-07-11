@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
-  <version>0.9</version>
-  <url>http://www.psyked.co.uk/airapps/Screentweetr09.air</url>
+  <version>1.0</version>
+  <url>http://www.psyked.co.uk/airapps/Screentweetr1.air</url>
   <description><![CDATA[Screentweetr
+Version 1.0:
+ * First release!
+ * Revised graphics and application icon.
+ * Mac / Windows native OS integration improvements.
+ * Added start monitor / stop monitor options to application dock menu.
 Version 0.9:
  * Added support for img.ly.
  * Added support for Posterous.
