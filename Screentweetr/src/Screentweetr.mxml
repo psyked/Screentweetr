@@ -3,23 +3,14 @@
 				initialize="init(event);" creationComplete="creationComplete(event);">
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Menu;
 			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
 			import couk.psyked.managers.types.EncoderManagerTypes;
 			import couk.psyked.managers.EncoderManager;
 			import couk.mmtdigital.air.ApplicationConfig;
-			/**
-			 * Do to:
-			 * 				- Use updated settings class to keep passwords secure
-			 * 				- Copy settings to secure area
-			 * 				- Add link to twitter settings screen to twitter signup page
-			 * 				- Add help / welcome screens
-			 * 				- Use inverse blendmode on progress bars (block and text)
-			 */
-
 			import air.update.ApplicationUpdaterUI;
 			import air.update.events.UpdateEvent;
-			//import twitter.TwitPic;
 			import com.pfp.events.JPEGAsyncCompleteEvent;
 			import com.pfp.utils.JPEGAsyncEncoder;
 			import config.ScreentweetrApplicationConfig;
@@ -39,7 +30,9 @@
 			private var screenshotmonitor:PrintScreenMonitor;
 			private var dockImage:BitmapData;
 			private var _config:ScreentweetrApplicationConfig;
-			/* private var encoder:JPEGAsyncEncoder; */
+			private var sysMenu:NativeMenu;
+			private var stopMenuItem:NativeMenuItem;
+			private var startMenuItem:NativeMenuItem;
 
 			public var uploadMessage:String
 
@@ -129,7 +122,7 @@
 			private function onEncodingComplete(e:JPEGAsyncCompleteEvent):void
 			{
 				trace("Screentweetr onEncodingComplete");
-				var newFile:File = File.applicationStorageDirectory.resolvePath("screenshot.jpg");//createTempFile();
+				var newFile:File = File.applicationStorageDirectory.resolvePath("screenshot.jpg");
 				var newFileStream:FileStream = new FileStream();
 				newFileStream.open(newFile, FileMode.WRITE);
 				newFileStream.writeBytes(e.ImageData);
@@ -215,25 +208,55 @@
 			private function createSystrayRootMenu():NativeMenu
 			{
 				//Add the menuitems with the corresponding actions 
-				var menu:NativeMenu = new NativeMenu();
+				sysMenu = new NativeMenu();
 
-				var openHelpItem:NativeMenuItem = new NativeMenuItem("Help");
-				var openSettingsItem:NativeMenuItem = new NativeMenuItem("Settings");
-				var exitNativeMenuItem:NativeMenuItem = new NativeMenuItem("Close");
+				var openHelpItem:NativeMenuItem = new NativeMenuItem("Help / Instructions");
+				var openSettingsItem:NativeMenuItem = new NativeMenuItem("Application Settings");
+				if (Capabilities.os.toString().toLowerCase().indexOf("windows") != -1)
+				{
+					var exitNativeMenuItem:NativeMenuItem = new NativeMenuItem("Close Screentweetr");
+				}
+				startMenuItem = new NativeMenuItem("Start Monitoring");
+				stopMenuItem = new NativeMenuItem("Stop Monitoring");
 
 				//What should happen when the user clicks on something...       
 				openHelpItem.addEventListener(Event.SELECT, onNativeMenuOpenHelp);
 				openSettingsItem.addEventListener(Event.SELECT, onNativeMenuOpenSettings);
-				exitNativeMenuItem.addEventListener(Event.SELECT, onNativeMenuCloseMain);
+				if (Capabilities.os.toString().toLowerCase().indexOf("windows") != -1)
+				{
+					exitNativeMenuItem.addEventListener(Event.SELECT, onNativeMenuCloseMain);
+				}
+				startMenuItem.addEventListener(Event.SELECT, onStartMonitoring);
+				stopMenuItem.addEventListener(Event.SELECT, onStopMonitoring);
 
 				//Add the menuitems to the menu 
-				menu.addItem(openHelpItem);
-				menu.addItem(openSettingsItem);
-				menu.addItem(new NativeMenuItem("", true));
-				//separator 
-				menu.addItem(exitNativeMenuItem);
+				sysMenu.addItem(openHelpItem);
+				sysMenu.addItem(openSettingsItem);
+				sysMenu.addItem(new NativeMenuItem("", true));
+				sysMenu.addItem(stopMenuItem);
+				if (Capabilities.os.toString().toLowerCase().indexOf("windows") != -1)
+				{
+					sysMenu.addItem(new NativeMenuItem("", true));
+					sysMenu.addItem(exitNativeMenuItem);
+				}
 
-				return menu;
+				return sysMenu;
+			}
+
+			private function onStartMonitoring(e:Event = null):void
+			{
+				sysMenu.removeItem(startMenuItem);
+				sysMenu.addItemAt(stopMenuItem, 3);
+				screenshotmonitor.watch();
+				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.START_MONITORING));
+			}
+
+			private function onStopMonitoring(e:Event = null):void
+			{
+				sysMenu.removeItem(stopMenuItem);
+				sysMenu.addItemAt(startMenuItem, 3);
+				screenshotmonitor.unwatch();
+				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.STOP_MONITORING));
 			}
 
 			private function onNativeMenuOpenSettings(e:Event = null):void
@@ -253,7 +276,10 @@
 
 			private function setSystemTrayProperties():void
 			{
-				SystemTrayIcon(NativeApplication.nativeApplication.icon).tooltip = "Screentweetr";
+				if (Capabilities.os.toString().toLowerCase().indexOf("windows") != -1)
+				{
+					SystemTrayIcon(NativeApplication.nativeApplication.icon).tooltip = "Screentweetr";
+				}
 				SystemTrayIcon(NativeApplication.nativeApplication.icon).addEventListener(ScreenMouseEvent.CLICK, onScreenshot);
 			}
 

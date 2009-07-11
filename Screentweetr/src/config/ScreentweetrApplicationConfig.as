@@ -3,11 +3,11 @@ package config
 	import couk.mmtdigital.air.ApplicationConfig;
 	import couk.mmtdigital.air.ApplicationConfigStorageType;
 	import couk.mmtdigital.air.events.ApplicationConfigEventType;
-	
+
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.filesystem.File;
-	
+
 	import mx.binding.utils.BindingUtils;
 
 	[Bindable]
@@ -41,7 +41,8 @@ package config
 			configFile.addEventListener(ApplicationConfigEventType.CONFIG_FILE_LOADED, onConfigReadyHander);
 			/* If a nonsecure configuration file exists, delete it. */
 			var lFile:File = new File(configFile.configFilepath);
-			if(lFile.exists) {
+			if (lFile.exists)
+			{
 				lFile.moveToTrash();
 			}
 			configFile.storageDirectory = ApplicationConfigStorageType.ENCRYPTED_STORE;
@@ -65,11 +66,11 @@ package config
 		public function refreshConfigFile():void
 		{
 			trace(ApplicationConfig.instance.getSetting("twitterUsername"));
-			if (ApplicationConfig.instance.getSetting("twitterUsername"))
+			if (ApplicationConfig.instance.getSetting("twitterUsername") && ApplicationConfig.instance.getSetting("twitterUsername") != "null")
 			{
 				instance.USERNAME = ApplicationConfig.instance.getSetting("twitterUsername");
 			}
-			if (ApplicationConfig.instance.getSetting("twitterPassword"))
+			if (ApplicationConfig.instance.getSetting("twitterPassword") && ApplicationConfig.instance.getSetting("twitterPassword") != "null")
 			{
 				instance.PASSWORD = ApplicationConfig.instance.getSetting("twitterPassword");
 			}

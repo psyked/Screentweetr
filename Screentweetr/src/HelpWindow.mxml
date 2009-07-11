@@ -51,8 +51,8 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:Canvas backgroundColor="#C6F0F3" left="0" top="0" bottom="0" right="0">
-		<mx:Image x="408" y="282" source="images/tweet_bird.png" />
+	<mx:Canvas backgroundColor="#9AD4F9" left="0" top="0" bottom="0" right="0">
+		<mx:Image x="408" y="282" source="@Embed(source='images/tweet_bird.png')" />
 		<mx:Label x="10" y="10" text="Hey there, Mac user. Welcome to Screentweetr."
 				  fontFamily="Arial" color="#584453" paddingBottom="0" paddingLeft="0"
 				  paddingRight="0" paddingTop="0" fontWeight="bold"  id="mac_welcome"/>

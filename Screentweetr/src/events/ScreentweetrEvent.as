@@ -12,6 +12,8 @@ package events
 		public static const UPLOAD_IMAGE:String = "uploadImage";
 		public static const OPEN_HELP:String = "openHelp";
 		public static const CLOSE_HELP:String = "closeHelp";
+		public static const START_MONITORING:String = "startMonitoring";
+		public static const STOP_MONITORING:String = "stopMonitoring";
 		
 		public function ScreentweetrEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

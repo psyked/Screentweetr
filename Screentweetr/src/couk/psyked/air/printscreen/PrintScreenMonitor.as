@@ -101,6 +101,7 @@ package couk.psyked.air.printscreen
 		{
 			timer.stop();
 			timer.removeEventListener(TimerEvent.TIMER, onTimerEvent);
+			timer = null;
 		}
 		
 		private function onTimerEvent(e:TimerEvent):void

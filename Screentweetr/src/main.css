@@ -13,20 +13,26 @@ Button
 	cornerRadius: 8;
 	fontSize: 13;
 	fontWeight: bold;
-	themeColor: #FFFFFF;
+	themeColor: #41B0F5;
 	leading: 0;
 	paddingLeft: 4;
 	paddingRight: 4;
 	paddingTop: 3;
 	paddingBottom: 3;
 	color: #584453;
-	textSelectedColor: #33CCFF;
+	textSelectedColor: #584453;
 	textRollOverColor: #584453;
 	fillAlphas: 1.0, 1.0;
-	fillColors: #C5F0F3, #94E4E8;
+	fillColors: #86CEF9, #41B0F5, #41B0F5, #41B0F5;
 	disabledColor: #9B9B9B;
 	borderColor: #584453;
 	fontStyle: normal;
+}
+Button.GreenButton
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #DDFFCC, #BDDCAD, #BDDCAD, #BDDCAD;
+	themeColor: #BDDCAD;
 }
 
 Label, Text
@@ -45,7 +51,7 @@ Label, Text
 	textSelectedColor: #33CCFF;
 	textRollOverColor: #FFFFFF;
 	fillAlphas: 1.0, 1.0;
-	fillColors: #C5F0F3, #94E4E8;
+	fillColors: #86CEF9, #41B0F5;
 	borderColor: #FFFFFF;
 	disabledColor: #FFFFFF;
 	fontStyle: normal;

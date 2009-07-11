@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="500" height="280"
-		   closing="onClosing(event);" backgroundColor="#C6F0F3" horizontalScrollPolicy="off"
-		   verticalScrollPolicy="off" initialize="init(event);">
+		   closing="onClosing(event);" backgroundColor="#9AD4F9" horizontalScrollPolicy="off"
+		   verticalScrollPolicy="off" initialize="init(event);" themeColor="#59A7E7">
 	<mx:Script>
 		<![CDATA[
 			import twitter.types.ServiceTypes;
@@ -71,7 +71,6 @@
 
 			private function onSave(e:Event):void
 			{
-				//trace("saving", username_input.text, password_input.text);
 				ScreentweetrApplicationConfig.getInstance().USERNAME = username_input.text;
 				ScreentweetrApplicationConfig.getInstance().PASSWORD = password_input.text;
 				close();
@@ -81,10 +80,30 @@
 			{
 				close();
 			}
+			
+			private function onCancelChanges(e:Event):void
+			{
+				username_input.text = ScreentweetrApplicationConfig.getInstance().USERNAME;
+				password_input.text = ScreentweetrApplicationConfig.getInstance().PASSWORD;
+			}
 
 			private function onReset(e:Event):void
 			{
 				ApplicationConfig.instance.deleteAllSettings();
+				
+				username_input.text = "";
+				password_input.text = "";
+				ScreentweetrApplicationConfig.getInstance().USERNAME = username_input.text;
+				ScreentweetrApplicationConfig.getInstance().PASSWORD = password_input.text;
+				
+				tweetphoto_chk.selected = true;
+				onTweetPhotoRadioButtonClick(e);
+				
+				show_window.selected = true;
+				onShowWelcomeClick(e);
+				
+				start_on_login.selected = false;
+				onStartOnLoginClick(e);
 			}
 
 			private function onShowWelcomeClick(e:Event):void
@@ -154,7 +173,7 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:Canvas backgroundColor="#c6f0f3" width="100%" height="100%" verticalScrollPolicy="off"
+	<mx:Canvas backgroundColor="#9AD4F9" width="100%" height="100%" verticalScrollPolicy="off"
 			   horizontalScrollPolicy="off">
 		<mx:Label x="0" y="0" text="Screentweetr Settings" color="#584453" fontSize="20"
 				  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
@@ -178,12 +197,17 @@
 						  displayAsPassword="true" />
 			<mx:Text text="* Your username and password are stored encrypted, so don't worry."
 					 fontSize="11" height="100%" width="100%" selectable="false" />
+			<mx:HBox width="100%" horizontalGap="4">
+				<mx:Button label="Cancel changes" click="onCancelChanges(event);"
+						   buttonMode="true"  fontSize="10" styleName="GreenButton"/>
+				<mx:Spacer width="100%" height="100%"/>
+				<mx:Button label="Save changes" click="onSave(event);" buttonMode="true"
+						    fontSize="10" styleName="GreenButton"/>
+			</mx:HBox>
 		</mx:VBox>
-		<mx:Button label="Save changes" click="onSave(event);" buttonMode="true" x="394" y="244"
-				   fontSize="12" />
-		<mx:Button x="281" y="244" label="Cancel changes" fontSize="12" click="onCancel(event);"
+		<mx:Button x="394" y="244" label="Close window" fontSize="12" click="onCancel(event);"
 				   buttonMode="true" />
-		<mx:VBox x="2" y="39" width="280" height="197" paddingBottom="10" paddingLeft="10"
+		<mx:VBox x="2" y="24" width="280" height="197" paddingBottom="10" paddingLeft="10"
 				 paddingRight="10" paddingTop="10" verticalGap="4">
 			<mx:CheckBox label="Show welcome screen on startup" fontSize="12" selected="true"
 						 id="show_window" click="onShowWelcomeClick(event);" useHandCursor="true" />
@@ -192,7 +216,7 @@
 						 useHandCursor="true" />
 			<mx:Label text="Services" color="#584453" fontFamily="Arial" paddingBottom="0"
 					  paddingLeft="0" paddingRight="0" paddingTop="0" fontWeight="bold" />
-			<mx:Label text="Select which upload service you'd like to use;" fontSize="12" />
+			<mx:Label text="Select which upload service you'd like to use;" fontSize="12"/>
 			<mx:Grid horizontalGap="4" verticalGap="4" width="100%">
 				<mx:GridRow width="100%" height="100%">
 					<mx:GridItem width="100%" height="100%">
@@ -235,8 +259,6 @@
 		</mx:VBox>
 		<mx:Label x="288" y="11" text="version {BindableApplicationInfo.appVersion}" fontSize="12"
 				  fontWeight="normal" textAlign="right" width="200" />
-		<mx:Label x="8" y="29" text="(items that are greyed out are currently in development)"
-				  fontSize="11" fontStyle="italic" />
 		<!--<mx:Button x="160" y="114.15" label="Cancel"/>-->
 	</mx:Canvas>
 </mx:Window>
