@@ -1,7 +1,7 @@
 package twitter
 {
-	import couk.mmtdigital.air.ApplicationConfig;
-
+	import couk.psyked.air.ApplicationConfig;
+	
 	import flash.events.DataEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -10,7 +10,6 @@ package twitter
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.filesystem.File;
-	import flash.net.FileReference;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;

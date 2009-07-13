@@ -6,10 +6,12 @@
 
 	<mx:Script>
 		<![CDATA[
+			import couk.psyked.air.events.ApplicationConfigEventType;
+			import couk.psyked.air.ApplicationConfig;
 			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
-			import couk.mmtdigital.air.events.ApplicationConfigEventType;
-			import couk.mmtdigital.air.ApplicationConfig;
+			//import couk.mmtdigital.air.events.ApplicationConfigEventType;
+			//import couk.mmtdigital.air.ApplicationConfig;
 			import flash.net.navigateToURL;
 			import mx.binding.utils.BindingUtils;
 			import com.pfp.utils.JPEGAsyncEncoder;

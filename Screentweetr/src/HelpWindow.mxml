@@ -3,7 +3,8 @@
 		   closing="onClosing(event);" initialize="init(event);" resizable="false">
 	<mx:Script>
 		<![CDATA[
-			import couk.mmtdigital.air.ApplicationConfig;
+			import couk.psyked.air.ApplicationConfig;
+			//import couk.mmtdigital.air.ApplicationConfig;
 			import mx.events.FlexEvent;
 			import flash.net.navigateToURL;
 			import events.ScreentweetrEvent;

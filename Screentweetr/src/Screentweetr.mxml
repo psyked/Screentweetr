@@ -3,12 +3,13 @@
 				initialize="init(event);" creationComplete="creationComplete(event);">
 	<mx:Script>
 		<![CDATA[
+			import couk.psyked.air.ApplicationConfig;
 			import mx.controls.Menu;
 			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
 			import couk.psyked.managers.types.EncoderManagerTypes;
 			import couk.psyked.managers.EncoderManager;
-			import couk.mmtdigital.air.ApplicationConfig;
+		//	import couk.mmtdigital.air.ApplicationConfig;
 			import air.update.ApplicationUpdaterUI;
 			import air.update.events.UpdateEvent;
 			import com.pfp.events.JPEGAsyncCompleteEvent;

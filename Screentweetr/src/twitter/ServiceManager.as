@@ -1,6 +1,6 @@
 package twitter
 {
-	import couk.mmtdigital.air.ApplicationConfig;
+	import couk.psyked.air.ApplicationConfig;
 	
 	import flash.events.DataEvent;
 	import flash.events.EventDispatcher;

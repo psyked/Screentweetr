@@ -1,4 +1,4 @@
-package couk.mmtdigital.air
+package couk.psyked.air
 {
 	public class ApplicationConfigStorageType
 	{

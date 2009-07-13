@@ -4,10 +4,11 @@
 		   verticalScrollPolicy="off" initialize="init(event);" themeColor="#59A7E7">
 	<mx:Script>
 		<![CDATA[
+			import couk.psyked.air.ApplicationConfig;
 			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
 			import mx.events.FlexEvent;
-			import couk.mmtdigital.air.ApplicationConfig;
+			//import couk.mmtdigital.air.ApplicationConfig;
 			import couk.psyked.air.BindableApplicationInfo;
 			import config.ScreentweetrApplicationConfig;
 			import events.ScreentweetrEvent;

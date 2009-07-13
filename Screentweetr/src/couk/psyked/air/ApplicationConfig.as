@@ -1,6 +1,6 @@
-package couk.mmtdigital.air
+package couk.psyked.air
 {
-	import couk.mmtdigital.air.events.ApplicationConfigEventType;
+	import couk.psyked.air.events.ApplicationConfigEventType;
 	
 	import flash.data.EncryptedLocalStore;
 	import flash.events.Event;

@@ -1,4 +1,4 @@
-package couk.mmtdigital.air.events
+package couk.psyked.air.events
 {
 	public class ApplicationConfigEventType
 	{

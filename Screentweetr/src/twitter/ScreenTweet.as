@@ -1,7 +1,7 @@
 package twitter
 {
-	import couk.mmtdigital.air.ApplicationConfig;
-
+	import couk.psyked.air.ApplicationConfig;
+	
 	import flash.events.DataEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -13,7 +13,7 @@ package twitter
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
-
+	
 	import ru.inspirit.net.MultipartURLLoader;
 
 	public class ScreenTweet extends EventDispatcher implements ITwitterService

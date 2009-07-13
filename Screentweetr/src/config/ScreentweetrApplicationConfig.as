@@ -1,13 +1,13 @@
 package config
 {
-	import couk.mmtdigital.air.ApplicationConfig;
-	import couk.mmtdigital.air.ApplicationConfigStorageType;
-	import couk.mmtdigital.air.events.ApplicationConfigEventType;
-
+	import couk.psyked.air.ApplicationConfig;
+	import couk.psyked.air.ApplicationConfigStorageType;
+	import couk.psyked.air.events.ApplicationConfigEventType;
+	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.filesystem.File;
-
+	
 	import mx.binding.utils.BindingUtils;
 
 	[Bindable]
