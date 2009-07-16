@@ -59,27 +59,6 @@ Label, Text
 
 @font-face
 {
-	fontFamily: Arial;
-	fontWeight: bold;
-	fontStyle: normal;
-	src: local("Arial");
-}
-@font-face
-{
-	fontFamily: Arial;
-	fontWeight: normal;
-	fontStyle: normal;
-	src: local("Arial");
-}
-/* @font-face
-{
-	fontFamily: Tondo;
-	fontWeight: bold;
-	fontStyle: normal;
-	src: url("fonts/tondo_v0_1_by_ficod.ttf");
-} */
-@font-face
-{
 	fontFamily: Tondo;
 	fontWeight: normal;
 	fontStyle: normal;
@@ -111,25 +90,11 @@ LinkButton
 	paddingBottom: 0;
 }
 
-@font-face
-{
-	fontFamily: Arial;
-	fontWeight: bold;
-	fontStyle: italic;
-	src: local("Arial");
-}
-@font-face
-{
-	fontFamily: Arial;
-	fontWeight: normal;
-	fontStyle: italic;
-	src: local("Arial");
-}
-
 .panel
 {
 	borderSkin: ClassReference('skin.PanelSkin');
 }
+
 CheckBox
 {
 	fontSize: 12;
@@ -145,4 +110,35 @@ RadioButton
 	paddingLeft: 0;
 	paddingRight: 0;
 	paddingTop: 0;
+}
+
+
+@font-face
+{
+	fontFamily: Myriad Pro;
+	fontWeight: bold;
+	fontStyle: italic;
+	src: url("fonts/MyriadPro-BoldIt.otf");
+}
+@font-face
+{
+	fontFamily: Myriad Pro;
+	fontWeight: normal;
+	fontStyle: italic;
+	src: url("fonts/MyriadPro-It.otf");
+}
+
+@font-face
+{
+	fontFamily: Myriad Pro;
+	fontWeight: bold;
+	fontStyle: normal;
+	src: url("fonts/MyriadPro-Bold.otf");
+}
+@font-face
+{
+	fontFamily: Myriad Pro;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: url("fonts/MyriadPro-Regular.otf");
 }

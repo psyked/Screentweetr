@@ -5,6 +5,7 @@
 <libraryPath defaultLinkType="1">
 <libraryPathEntry kind="4" path=""/>
 <libraryPathEntry kind="1" linkType="1" path="libs"/>
+<libraryPathEntry kind="3" linkType="1" path="/Psyked_Library/bin/Psyked_Library.swc" useDefaultLinkType="false"/>
 </libraryPath>
 <sourceAttachmentPath/>
 </compiler>
@@ -12,5 +13,8 @@
 <application path="Screentweetr.mxml"/>
 </applications>
 <modules/>
-<buildCSSFiles/>
+<buildCSSFiles>
+<buildCSSFileEntry destPath="bin-debug" sourcePath="src/main.css"/>
+<buildCSSFileEntry destPath="bin-debug" sourcePath="src/international.css"/>
+</buildCSSFiles>
 </actionScriptProperties>
