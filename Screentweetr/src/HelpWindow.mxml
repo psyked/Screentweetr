@@ -8,27 +8,34 @@
 			import mx.events.FlexEvent;
 			import flash.net.navigateToURL;
 			import events.ScreentweetrEvent;
-			
+
 			private function init(e:FlexEvent):void
 			{
-				if(ApplicationConfig.instance.getSetting("showWelcome") != "false"){
+				if (ApplicationConfig.instance.getSetting("showWelcome") != "false")
+				{
 					show_window.selected = true;
-				} else {
+				}
+				else
+				{
 					show_window.selected = false;
 				}
 				if (Capabilities.os.toString().toLowerCase().indexOf("windows") != -1)
 				{
 					mac_welcome.visible = false;
 					mac_shortcuts.visible = false;
+					mac_welcome.includeInLayout = false;
+					mac_shortcuts.includeInLayout = false;
 				}
 				else
 				{
 					pc_welcome.visible = false;
 					pc_shortcuts.visible = false;
+					pc_welcome.includeInLayout = false;
+					pc_shortcuts.includeInLayout = false;
 				}
 				//trace('ApplicationConfig.instance.getSetting("showWelcome")',ApplicationConfig.instance.getSetting("showWelcome"));
 			}
-			
+
 			private function onPress(e:Event):void
 			{
 				//trace("(!show_window.selected).toString()",(show_window.selected).toString());
@@ -40,12 +47,12 @@
 			{
 				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.CLOSE_HELP));
 			}
-			
+
 			private function onOpenSettings(e:Event):void
 			{
 				NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));
 			}
-			
+
 			private function onGotoTwitter(e:Event):void
 			{
 				navigateToURL(new URLRequest("http://twitter.com/"), "_blank");
@@ -53,53 +60,74 @@
 		]]>
 	</mx:Script>
 	<mx:Canvas backgroundColor="#9AD4F9" left="0" top="0" bottom="0" right="0">
-		<mx:Image x="408" y="282" source="@Embed(source='images/tweet_bird.png')" />
-		<mx:Label x="10" y="10" text="Hey there, Mac user. Welcome to Screentweetr."
-				  fontFamily="Arial" color="#584453" paddingBottom="0" paddingLeft="0"
-				  paddingRight="0" paddingTop="0" fontWeight="bold"  id="mac_welcome"/>
-		<mx:Label x="10" y="10" text="Hey there, PC user. Welcome to Screentweetr."
-				  fontFamily="Arial" color="#584453" paddingBottom="0" paddingLeft="0"
-				  paddingRight="0" paddingTop="0" fontWeight="bold"  id="pc_welcome"/>
-		<mx:Text x="10" y="29" width="478" height="120" fontFamily="Arial" color="#584453"
-				 fontSize="12" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" selectable="false">
-			<mx:htmlText>
-				<![CDATA[All you need to get started is a twitter account. Click the button below to open the settings window and enter your twitter username and password. If you haven't already got an account, head over to <a href="http://twitter.com/">http://twitter.com</a> and sign up.<br/>
-<br/><br/><br/>Screentweetr will kick into action when you take a screenshot. Try it now, by pressing;]]>
-			</mx:htmlText>
-		</mx:Text>
-		<mx:Text x="10" y="213" width="478" height="103" fontFamily="Arial" color="#584453"
-				 fontSize="12" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" selectable="false">
-			<mx:htmlText>
-				<![CDATA[Once you've taken a screenshot a notification window will appear in the bottom right of your screen. 
-<br/>To add a message click on the bird in the notification box, and then upload your screenshot with the 'Upload' button.]]>
-			</mx:htmlText>
-		</mx:Text>
-		<mx:CheckBox x="10" y="323" label="Show welcome screen on startup." fontSize="11" selected="true"  buttonMode="true" id="show_window" click="onPress(event);"/>
-		<mx:Button x="40.5" y="84" label="Enter your twitter username &amp; password now,"  fontSize="12" click="onOpenSettings(event);" buttonMode="true"/>
-		<mx:Button x="344.5" y="84" label="Goto Twitter.com" fontSize="12" click="onGotoTwitter(event);" buttonMode="true"/>
-		<mx:Label x="321.5" y="87" text="or" fontFamily="Arial" fontStyle="italic" fontWeight="bold" color="#584453" fontSize="12"/>
-		<mx:Canvas x="10" y="150" width="478" height="60" id="mac_shortcuts">
-			<mx:Label x="42" y="0" text="⌘ + Ctrl + Shift + 3 = Take a screenshot of the entire desktop" fontFamily="Arial" color="#584453"
+		<mx:VBox right="10" left="10" top="10" bottom="10" verticalGap="2">
+			<mx:Label text="Hey there, PC user. Welcome to Screentweetr." color="#584453"
 					  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
-					  fontWeight="bold"  fontSize="12"/>
-			<mx:Label x="42" y="20" text="⌘ + Ctrl + Shift + 4 = Copy an area of the desktop" fontFamily="Arial" color="#584453"
+					  fontWeight="bold" id="pc_welcome" />
+			<mx:Label text="Hey there, Mac user. Welcome to Screentweetr." color="#584453"
 					  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
-					  fontWeight="bold"  fontSize="12"/>
-			<mx:Label x="42" y="40" text="⌘ + Ctrl + Shift + 4 + Spacebar = Copy a specific window" fontFamily="Arial" color="#584453"
-					  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
-					  fontWeight="bold"  fontSize="12"/>
-			<mx:Image x="30.5" y="3" source="images/command.png" width="12" height="12"/>
-			<mx:Image x="30.5" y="23" source="images/command.png" width="12" height="12"/>
-			<mx:Image x="30.5" y="43" source="images/command.png" width="12" height="12"/>
-			
-		</mx:Canvas>
-		<mx:Canvas x="10" y="150" width="478" height="60" id="pc_shortcuts">
-				<mx:Label x="30" y="0" text="Print Screen = Take a screenshot of the entire desktop" fontFamily="Arial" color="#584453"
-						  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
-						  fontWeight="bold"  fontSize="12"/>
-				<mx:Label x="30" y="20" text="Alt + Print Screen = Copy a specific window" fontFamily="Arial" color="#584453"
-						  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
-						  fontWeight="bold"  fontSize="12"/>
+					  fontWeight="bold" id="mac_welcome" />
+			<mx:Text color="#584453" fontSize="12" paddingBottom="0" paddingLeft="0"
+					 paddingRight="0" paddingTop="0" selectable="false" width="100%" height="50">
+				<mx:htmlText>
+					<![CDATA[All you need to get started is a twitter account. Click the button below to open the settings window and enter your twitter username and password. If you haven't already got an account, head over to <a href="http://twitter.com/">http://twitter.com</a> and sign up.]]>
+				</mx:htmlText>
+			</mx:Text>
+			<mx:HBox width="100%" horizontalAlign="center" height="30" verticalAlign="top">
+				<mx:Button label="Enter your twitter username &amp; password now," fontSize="12"
+						   click="onOpenSettings(event);" buttonMode="true" />
+				<mx:Label text="or" fontStyle="italic" fontWeight="bold" color="#584453"
+						  fontSize="12" />
+				<mx:Button label="Goto Twitter.com" fontSize="12" click="onGotoTwitter(event);"
+						   buttonMode="true" />
+			</mx:HBox>
+			<mx:Text color="#584453" fontSize="12" paddingBottom="0" paddingLeft="0"
+					 paddingRight="0" paddingTop="0" selectable="false" width="100%" height="20">
+				<mx:htmlText>
+					<![CDATA[Screentweetr will kick into action when you take a screenshot. Try it now, by pressing;]]>
+				</mx:htmlText>
+			</mx:Text>
+			<mx:Canvas x="10" y="150" width="478" height="60" id="mac_shortcuts">
+				<mx:Label x="42" y="0"
+						  text="⌘ + Ctrl + Shift + 3 = Take a screenshot of the entire desktop"
+						  color="#584453" paddingBottom="0" paddingLeft="0" paddingRight="0"
+						  paddingTop="0" fontWeight="bold" fontSize="12" />
+				<mx:Label x="42" y="20" text="⌘ + Ctrl + Shift + 4 = Copy an area of the desktop"
+						  color="#584453" paddingBottom="0" paddingLeft="0" paddingRight="0"
+						  paddingTop="0" fontWeight="bold" fontSize="12" />
+				<mx:Label x="42" y="40"
+						  text="⌘ + Ctrl + Shift + 4 + Spacebar = Copy a specific window"
+						  color="#584453" paddingBottom="0" paddingLeft="0" paddingRight="0"
+						  paddingTop="0" fontWeight="bold" fontSize="12" />
+				<mx:Image x="30.5" y="3" source="images/command.png" width="12" height="12" />
+				<mx:Image x="30.5" y="23" source="images/command.png" width="12" height="12" />
+				<mx:Image x="30.5" y="43" source="images/command.png" width="12" height="12" />
+
 			</mx:Canvas>
+			<mx:Canvas x="10" y="150" width="478" height="40" id="pc_shortcuts">
+				<mx:Label x="30" y="0" text="Print Screen = Take a screenshot of the entire desktop"
+						  color="#584453" paddingBottom="0" paddingLeft="0" paddingRight="0"
+						  paddingTop="0" fontWeight="bold" fontSize="12" />
+				<mx:Label x="30" y="20" text="Alt + Print Screen = Copy a specific window"
+						  color="#584453" paddingBottom="0" paddingLeft="0" paddingRight="0"
+						  paddingTop="0" fontWeight="bold" fontSize="12" />
+			</mx:Canvas>
+			<mx:Text color="#584453" fontSize="12" paddingBottom="0" paddingLeft="0"
+					 paddingRight="0" paddingTop="0" selectable="false" width="100%" height="35">
+				<mx:htmlText>
+					<![CDATA[Once you've taken a screenshot a notification window will appear in the bottom right of your screen. ]]>
+				</mx:htmlText>
+			</mx:Text>
+			<mx:Text color="#584453" fontSize="12" paddingBottom="0" paddingLeft="0"
+					 paddingRight="0" paddingTop="0" selectable="false" width="100%" height="35">
+				<mx:htmlText>
+					<![CDATA[To add a message click on the bird in the notification box, and then upload your screenshot with the 'Upload' button.]]>
+				</mx:htmlText>
+			</mx:Text>
+		</mx:VBox>
+		<mx:Image x="408" y="282" source="@Embed(source='images/tweet_bird.png')" />
+		<mx:CheckBox x="10" y="323" label="Show welcome screen on startup." fontSize="11"
+					 selected="true" buttonMode="true" id="show_window" click="onPress(event);" />
+
 	</mx:Canvas>
 </mx:Window>

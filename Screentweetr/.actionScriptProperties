@@ -16,5 +16,6 @@
 <buildCSSFiles>
 <buildCSSFileEntry destPath="bin-debug" sourcePath="src/main.css"/>
 <buildCSSFileEntry destPath="bin-debug" sourcePath="src/international.css"/>
+<buildCSSFileEntry destPath="bin-debug" sourcePath="src/defaultfonts.css"/>
 </buildCSSFiles>
 </actionScriptProperties>

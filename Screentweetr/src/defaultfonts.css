@@ -1,4 +1,8 @@
 /* CSS file */
+global
+{
+	fontFamily: Arial;
+}
 
 Window
 {

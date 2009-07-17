@@ -9,7 +9,7 @@ Window
 
 Button
 {
-	fontFamily: Arial;
+	fontFamily: Myriad Pro;
 	cornerRadius: 8;
 	fontSize: 13;
 	fontWeight: bold;
@@ -28,6 +28,7 @@ Button
 	borderColor: #584453;
 	fontStyle: normal;
 }
+
 Button.GreenButton
 {
 	fillAlphas: 1.0, 1.0;
@@ -37,7 +38,7 @@ Button.GreenButton
 
 Label, Text
 {
-	fontFamily: Arial;
+	fontFamily: Myriad Pro;
 	cornerRadius: 8;
 	fontSize: 13;
 	fontWeight: normal;
@@ -55,6 +56,11 @@ Label, Text
 	borderColor: #FFFFFF;
 	disabledColor: #FFFFFF;
 	fontStyle: normal;
+}
+
+global
+{
+	fontFamily: Myriad;
 }
 
 @font-face

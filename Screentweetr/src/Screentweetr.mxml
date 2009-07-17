@@ -3,13 +3,14 @@
 				initialize="init(event);" creationComplete="creationComplete(event);">
 	<mx:Script>
 		<![CDATA[
+			import skin.ThemeManager;
 			import couk.psyked.air.ApplicationConfig;
 			import mx.controls.Menu;
 			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
 			import couk.psyked.managers.types.EncoderManagerTypes;
 			import couk.psyked.managers.EncoderManager;
-		//	import couk.mmtdigital.air.ApplicationConfig;
+			//	import couk.mmtdigital.air.ApplicationConfig;
 			import air.update.ApplicationUpdaterUI;
 			import air.update.events.UpdateEvent;
 			import com.pfp.events.JPEGAsyncCompleteEvent;
@@ -101,6 +102,24 @@
 				if (!ApplicationConfig.instance.getSetting("defaultService"))
 				{
 					ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWEET_PHOTO);
+				}
+
+				//trace(ApplicationConfig.instance.getSetting("fontSet"));
+
+				if (ApplicationConfig.instance.getSetting("fontSet") == "international")
+				{
+					// if the fontSet is international, we load the fonts based on Myriad Pro
+					ThemeManager.changeSkin("international.swf");
+				}
+				else
+				{
+					ThemeManager.changeSkin("defaultfonts.swf");
+					// if the font is not international (not set or set to 'default') use the font based on Arial
+					if (!ApplicationConfig.instance.getSetting("fontSet"))
+					{
+						// if the fontSet is not set, add a default
+						ApplicationConfig.instance.setSetting("fontSet", "default");
+					}
 				}
 
 				notification = new NotificationWindow();
@@ -305,5 +324,5 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:Style source="main.css" />
+	<mx:Style source="defaultfonts.css" />
 </mx:Application>

@@ -4,6 +4,7 @@
 		   verticalScrollPolicy="off" initialize="init(event);" themeColor="#59A7E7">
 	<mx:Script>
 		<![CDATA[
+			import skin.ThemeManager;
 			import couk.psyked.air.ApplicationConfig;
 			import twitter.types.ServiceTypes;
 			import twitter.ServiceManager;
@@ -63,6 +64,15 @@
 						twitpic_chk.selected = true;
 						break;
 				}
+
+				if (ApplicationConfig.instance.getSetting("fontSet") == "international")
+				{
+					international_support.selected = true;
+				}
+				else
+				{
+					international_support.selected = false;
+				}
 			}
 
 			private function onClosing(e:Event):void
@@ -81,7 +91,7 @@
 			{
 				close();
 			}
-			
+
 			private function onCancelChanges(e:Event):void
 			{
 				username_input.text = ScreentweetrApplicationConfig.getInstance().USERNAME;
@@ -91,18 +101,18 @@
 			private function onReset(e:Event):void
 			{
 				ApplicationConfig.instance.deleteAllSettings();
-				
+
 				username_input.text = "";
 				password_input.text = "";
 				ScreentweetrApplicationConfig.getInstance().USERNAME = username_input.text;
 				ScreentweetrApplicationConfig.getInstance().PASSWORD = password_input.text;
-				
+
 				tweetphoto_chk.selected = true;
 				onTweetPhotoRadioButtonClick(e);
-				
+
 				show_window.selected = true;
 				onShowWelcomeClick(e);
-				
+
 				start_on_login.selected = false;
 				onStartOnLoginClick(e);
 			}
@@ -148,29 +158,43 @@
 				ServiceManager.instance.serviceType = ServiceTypes.YFROG;
 				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.YFROG);
 			}
-			
+
 			private function onTwitgooRadioButtonClick(e:Event):void
 			{
 				ServiceManager.instance.serviceType = ServiceTypes.TWITGOO;
 				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWITGOO);
 			}
-			
+
 			private function onMobypictureRadioButtonClick(e:Event):void
 			{
 				ServiceManager.instance.serviceType = ServiceTypes.MOBYPICTURE;
 				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.MOBYPICTURE);
 			}
-			
+
 			private function onImgLyRadioButtonClick(e:Event):void
 			{
 				ServiceManager.instance.serviceType = ServiceTypes.IMG_LY;
 				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.IMG_LY);
 			}
-			
+
 			private function onPosterousRadioButtonClick(e:Event):void
 			{
 				ServiceManager.instance.serviceType = ServiceTypes.POSTEROUS;
 				ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.POSTEROUS);
+			}
+
+			private function onInternationalCharacterClick(e:Event):void
+			{
+				if ((e.target as CheckBox).selected)
+				{
+					ThemeManager.changeSkin("international.swf");
+					ApplicationConfig.instance.setSetting("fontSet", "international");
+				}
+				else
+				{
+					ThemeManager.changeSkin("defaultfonts.swf");
+					ApplicationConfig.instance.setSetting("fontSet", "default");
+				}
 			}
 		]]>
 	</mx:Script>
@@ -179,19 +203,19 @@
 		<mx:Label x="0" y="0" text="Screentweetr Settings" color="#584453" fontSize="20"
 				  fontFamily="Tondo" paddingBottom="6" paddingLeft="8" paddingRight="8"
 				  paddingTop="6" />
-		<mx:Button x="10" y="244" label="Reset to defaults (&amp; forget login details)"
-				   buttonMode="true" fontSize="12" click="onReset(event);" />
-		<mx:VBox x="288" y="38" width="200" height="197" styleName="panel" verticalGap="4"
-				 paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
-			<mx:Label x="10" y="10" text="Twitter settings" color="#584453" fontFamily="Arial"
+		<mx:Button y="244" label="Reset to defaults (&amp; forget login details)"
+				   buttonMode="true" fontSize="12" click="onReset(event);"  left="10"/>
+		<mx:VBox y="38" height="197" styleName="panel" verticalGap="2"
+				 paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" width="200" x="288">
+			<mx:Label x="10" y="10" text="Twitter settings" color="#584453"
 					  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
 					  fontWeight="bold" />
-			<mx:Label x="10" y="37" text="Username" color="#584453" fontFamily="Arial"
+			<mx:Label x="10" y="37" text="Username" color="#584453"
 					  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
 					  fontSize="12" />
 			<mx:TextInput id="username_input"
 						  text="{ScreentweetrApplicationConfig.getInstance().USERNAME}" width="100%" />
-			<mx:Label text="Password" color="#584453" fontFamily="Arial" paddingBottom="0"
+			<mx:Label text="Password" color="#584453" paddingBottom="0"
 					  paddingLeft="0" paddingRight="0" paddingTop="0" fontSize="12" />
 			<mx:TextInput id="password_input"
 						  text="{ScreentweetrApplicationConfig.getInstance().PASSWORD}" width="100%"
@@ -199,67 +223,77 @@
 			<mx:Text text="* Your username and password are stored encrypted, so don't worry."
 					 fontSize="11" height="100%" width="100%" selectable="false" />
 			<mx:HBox width="100%" horizontalGap="4">
-				<mx:Button label="Cancel changes" click="onCancelChanges(event);"
-						   buttonMode="true"  fontSize="10" styleName="GreenButton"/>
-				<mx:Spacer width="100%" height="100%"/>
+				<mx:Button label="Cancel changes" click="onCancelChanges(event);" buttonMode="true"
+						   fontSize="10" styleName="GreenButton" />
+				<mx:Spacer width="100%" height="100%" />
 				<mx:Button label="Save changes" click="onSave(event);" buttonMode="true"
-						    fontSize="10" styleName="GreenButton"/>
+						   fontSize="10" styleName="GreenButton" />
 			</mx:HBox>
 		</mx:VBox>
-		<mx:Button x="394" y="244" label="Close window" fontSize="12" click="onCancel(event);"
-				   buttonMode="true" />
-		<mx:VBox x="2" y="24" width="280" height="197" paddingBottom="10" paddingLeft="10"
-				 paddingRight="10" paddingTop="10" verticalGap="4">
-			<mx:CheckBox label="Show welcome screen on startup" fontSize="12" selected="true"
-						 id="show_window" click="onShowWelcomeClick(event);" useHandCursor="true" />
-			<mx:CheckBox label="Start Screentweetr automatically on login" fontSize="12"
-						 id="start_on_login" click="onStartOnLoginClick(event);"
-						 useHandCursor="true" />
-			<mx:Label text="Services" color="#584453" fontFamily="Arial" paddingBottom="0"
-					  paddingLeft="0" paddingRight="0" paddingTop="0" fontWeight="bold" />
-			<mx:Label text="Select which upload service you'd like to use;" fontSize="12"/>
-			<mx:Grid horizontalGap="4" verticalGap="4" width="100%">
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="TwitPic" selected="true" id="twitpic_chk"
-										click="onTwitPicRadioButtonClick(event);" />
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="yFrog" id="yfrog_chk"
-										click="onYFrogRadioButtonClick(event);" />
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="TweetPhoto" id="tweetphoto_chk"
-										click="onTweetPhotoRadioButtonClick(event);" />
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="Mobypicture" id="mobypicture_chk" click="onMobypictureRadioButtonClick(event);"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="Twitgoo" id="twitgoo_chk"
-							click="onTwitgooRadioButtonClick(event);"/>
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="img.ly" id="imgly_chk" click="onImgLyRadioButtonClick(event);"/>
-					</mx:GridItem>
-				</mx:GridRow>
-				<mx:GridRow width="100%" height="100%">
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="ScreenTweet" id="screentweet_chk"
-										click="onScreenTweetRadioButtonClick(event);" />
-					</mx:GridItem>
-					<mx:GridItem width="100%" height="100%">
-						<mx:RadioButton label="Posterous" id="posterous_chk" click="onPosterousRadioButtonClick(event);" />
-					</mx:GridItem>
-				</mx:GridRow>
-			</mx:Grid>
-		</mx:VBox>
+		<mx:Button y="244" label="Close window" fontSize="12" click="onCancel(event);"
+				   buttonMode="true"  right="10"/>
 		<mx:Label x="288" y="11" text="version {BindableApplicationInfo.appVersion}" fontSize="12"
 				  fontWeight="normal" textAlign="right" width="200" />
+		<mx:CheckBox label="Show welcome screen on startup" fontSize="12" selected="true"
+					 id="show_window" click="onShowWelcomeClick(event);" useHandCursor="true" width="202" x="13" height="18" y="35"/>
+		<mx:CheckBox label="Start Screentweetr automatically on login" fontSize="12"
+					 id="start_on_login" click="onStartOnLoginClick(event);"
+					 useHandCursor="true" width="243" x="13" height="18" y="54"/>
+		<mx:CheckBox label="Use International font set" fontSize="12" id="international_support"
+					 click="onInternationalCharacterClick(event);" useHandCursor="true" width="159" x="13" height="18" y="73"/>
+		<mx:Label text="Services" color="#584453" paddingBottom="0"
+				  paddingLeft="0" paddingRight="0" paddingTop="0" fontWeight="bold" width="59" x="10" height="19" y="96"/>
+		<mx:Label text="Select which upload service you'd like to use;" fontSize="12" width="245" x="10" height="18" y="111"/>
+		<mx:Grid horizontalGap="0" verticalGap="0" width="270" x="10" height="106" y="130" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="TwitPic" selected="true" id="twitpic_chk"
+									click="onTwitPicRadioButtonClick(event);" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="yFrog" id="yfrog_chk"
+									click="onYFrogRadioButtonClick(event);" />
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="TweetPhoto" id="tweetphoto_chk"
+									click="onTweetPhotoRadioButtonClick(event);" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="Mobypicture" id="mobypicture_chk"
+									click="onMobypictureRadioButtonClick(event);" />
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="Twitgoo" id="twitgoo_chk"
+									click="onTwitgooRadioButtonClick(event);" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="img.ly" id="imgly_chk"
+									click="onImgLyRadioButtonClick(event);" />
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="ScreenTweet" id="screentweet_chk"
+									click="onScreenTweetRadioButtonClick(event);" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="Posterous" id="posterous_chk"
+									click="onPosterousRadioButtonClick(event);" />
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="TwitrPix" id="twitrpix_chk" click="" enabled="false" />
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<mx:RadioButton label="TwitDoc" id="twitdoc_chk" click="" enabled="false" />
+				</mx:GridItem>
+			</mx:GridRow>
+		</mx:Grid>
 		<!--<mx:Button x="160" y="114.15" label="Cancel"/>-->
 	</mx:Canvas>
 </mx:Window>

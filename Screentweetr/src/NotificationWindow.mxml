@@ -281,23 +281,23 @@
 			   width="444" x="0" height="396" bottom="63">
 		<mx:Canvas x="24" y="0" width="295" height="180"
 				   backgroundImage="@Embed(source='images/message_bubble.png')" id="message_bubble">
-			<mx:Label x="12" y="8" text="Add your message here:" color="#584453" fontFamily="Arial"
+			<mx:Label x="12" y="8" text="Add your message here:" color="#584453"
 					  fontWeight="bold" paddingBottom="0" paddingLeft="0" paddingRight="0"
 					  paddingTop="0" fontSize="14" />
-			<mx:Text x="12" y="26"
+			<mx:Text y="26"
 					 text="{'Your screenshot\'s '+serviceName+' url will be automagically added to your tweet.'}"
-					 color="#666666" fontFamily="Arial" fontWeight="normal" paddingBottom="0"
-					 paddingLeft="0" paddingRight="0" paddingTop="0" fontSize="11" width="265"
-					 height="35" fontStyle="normal"  selectable="false"/>
-			<mx:Label x="191" y="127" text="characters left." color="#584453" fontFamily="Arial"
+					 color="#666666" fontWeight="normal" paddingBottom="0"
+					 paddingLeft="0" paddingRight="0" paddingTop="0" fontSize="11"
+					 height="35" fontStyle="normal"  selectable="false" left="12" right="18"/>
+			<mx:Label x="191" y="127" text="characters left." color="#584453"
 					  fontWeight="bold" paddingBottom="0" paddingLeft="0" paddingRight="0"
 					  paddingTop="0" fontSize="12" textAlign="right" />
-			<mx:Label y="127" color="#584453" fontFamily="Arial" fontWeight="bold" paddingBottom="0"
+			<mx:Label y="127" color="#584453" fontWeight="bold" paddingBottom="0"
 					  paddingLeft="0" paddingRight="0" paddingTop="0" fontSize="12"
 					  textAlign="right" width="181.90001" x="12" id="character_count" text="113"
 					  height="18" />
 			<mx:TextArea y="59" height="61" id="message_text"
-						 change="onMessageChangeHandler(event);" maxChars="140" fontFamily="Arial"
+						 change="onMessageChangeHandler(event);" maxChars="140"
 						 fontSize="12" borderColor="#FFFFFF" width="264" x="13"
 						 text="I've just uploaded a screenshot with #screentweetr. Cool, huh?"
 						 color="#584453" themeColor="#FFFFFF" />
@@ -314,7 +314,7 @@
 				<mx:Text y="129"
 						 text="Easy, tiger. You need to have a screenshot to upload before you can actually go and, you know, upload it."
 						 fontSize="12" color="#584453" paddingBottom="6" paddingLeft="8"
-						 paddingRight="8" paddingTop="6" width="334" x="70" selectable="false" />
+						 paddingRight="8" paddingTop="6" width="334" x="70" selectable="false"  height="51"/>
 				<mx:Button label="Open settings window" height="30"
 						   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));}"
 						   icon="@Embed(source='images/applications-system.png')" buttonMode="true"
@@ -334,7 +334,7 @@
 						   id="upload_btn" x="141" y="188" width="190" />
 				<mx:Label 
 						  text="Current username: {ScreentweetrApplicationConfig.getInstance().USERNAME}"
-						  textAlign="left" width="290" x="131" color="#584453" fontFamily="Arial"
+						  textAlign="left" width="290" x="131" color="#584453"
 						  fontSize="12" id="current_username_text" y="155" paddingBottom="6"
 						  paddingLeft="8" paddingRight="8" paddingTop="6" />
 				<mx:Image height="22" click="closeNotifcation();" buttonMode="true" width="47"
@@ -344,17 +344,17 @@
 						  paddingTop="6" />
 				<mx:Text 
 						 text="New bitmap data detected in clipboard - would you like to upload it to {serviceName}?"
-						 height="51" selectable="false" width="290" x="132" color="#584453"
-						 fontFamily="Arial" fontSize="12" y="116" paddingBottom="6" paddingLeft="8"
-						 paddingRight="8" paddingTop="6" />
+						 selectable="false" color="#584453"
+						 fontSize="12" y="116" paddingBottom="6" paddingLeft="8"
+						 paddingRight="8" paddingTop="6"  height="64" left="132" right="-2"/>
 				<mx:Image width="125" height="100" scaleContent="true" id="screenshot_img" x="11"
 						  verticalAlign="middle" horizontalAlign="center" y="100" />
 				<mx:Canvas x="11" width="125" height="100" backgroundColor="#000000"
 						   backgroundAlpha="0.3" id="upload_progress" cornerRadius="8" y="100">
 				</mx:Canvas>
 				<mx:Label id="upload_progress_label" fontSize="32" width="104" textAlign="right"
-						  color="#000000" x="25" fontFamily="Arial" fontWeight="bold" y="125" />
-				<mx:Text fontFamily="Arial" color="#584453" fontSize="11" x="11" width="125"
+						  color="#000000" x="25" fontWeight="bold" y="125" />
+				<mx:Text color="#584453" fontSize="11" x="11" width="125"
 						 selectable="false" textAlign="center" id="process_label" paddingBottom="0"
 						 paddingLeft="0" paddingRight="0" paddingTop="0" height="32" y="201" />
 				<mx:Canvas x="256" y="62" width="80" height="64"
