@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
-  <version>1.0</version>
-  <url>http://www.psyked.co.uk/airapps/Screentweetr1.air</url>
+  <version>1.1</version>
+  <url>http://www.psyked.co.uk/airapps/Screentweetr11.air</url>
   <description><![CDATA[Screentweetr
+Version 1.1:
+ * Added an option for international character support, (Japanese fonts included!)
+ * Added TwitrPix API support.
+ * Added TwitDoc API support.
 Version 1.0:
  * First release!
  * Revised graphics and application icon.
