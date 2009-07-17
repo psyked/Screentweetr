@@ -39,6 +39,12 @@
 			public var uploadMessage:String
 
 			private static var _instance:Screentweetr;
+			
+			/* 
+					- Add a radial gradient to the blue background of the windows
+					- Add TwitrPix & TwitDoc APIs
+					- Add rollovers to close buttons, etc.
+			 */
 
 			private function init(e:FlexEvent):void
 			{

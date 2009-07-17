@@ -301,7 +301,7 @@
 						 fontSize="12" borderColor="#FFFFFF" width="264" x="13"
 						 text="I've just uploaded a screenshot with #screentweetr. Cool, huh?"
 						 color="#584453" themeColor="#FFFFFF" />
-			<mx:LinkButton x="250" y="4.8" label="close" click="removeMessage()" />
+			<mx:LinkButton x="250" y="4.8" label="close" click="removeMessage()"  themeColor="#FFFFFF"/>
 		</mx:Canvas>
 		<mx:Canvas width="444" height="202" backgroundImage="@Embed(source='images/background_2.png')"
 				   right="0" bottom="0">
