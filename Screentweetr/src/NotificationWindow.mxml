@@ -75,7 +75,7 @@
 			{
 				message_bubble.visible = false;
 				message_notification.visible = true;
-				message_text.text = "";
+				//message_text.text = "";
 			}
 
 			private function onMessageChangeHandler(e:Event = null):void
@@ -88,7 +88,7 @@
 			{
 				Tweener.addTween(message_bubble, {alpha: 0, time: 0.5, onComplete: onMessageBubbleCloseCompleteHandler});
 
-				var resultXML:XML = new XML(event.text);
+				var resultXML:XML = new XML(event.data);
 
 				if (ServiceManager.instance.serviceType == ServiceTypes.SCREEN_TWEET)
 				{
@@ -99,6 +99,12 @@
 				{
 					errorMessage = resultXML.child("result")[0].@code;
 					resultUrl = resultXML.child("url")[0];
+				}
+				else if (ServiceManager.instance.serviceType == ServiceTypes.TWIT_DOC)
+				{
+					//trace(resultXML..["short_url"]));
+					errorMessage = resultXML..err[0];
+					resultUrl = resultXML..short_url[0];
 				}
 				else
 				{
@@ -314,7 +320,7 @@
 				<mx:Text y="129"
 						 text="Easy, tiger. You need to have a screenshot to upload before you can actually go and, you know, upload it."
 						 fontSize="12" color="#584453" paddingBottom="6" paddingLeft="8"
-						 paddingRight="8" paddingTop="6" width="334" x="70" selectable="false"  height="51"/>
+						 paddingRight="8" paddingTop="6" selectable="false"  height="51" left="70" right="16"/>
 				<mx:Button label="Open settings window" height="30"
 						   click="{NativeApplication.nativeApplication.dispatchEvent(new Event(ScreentweetrEvent.OPEN_SETTINGS));}"
 						   icon="@Embed(source='images/applications-system.png')" buttonMode="true"

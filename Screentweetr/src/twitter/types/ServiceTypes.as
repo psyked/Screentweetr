@@ -10,6 +10,8 @@ package twitter.types
 		public static var MOBYPICTURE:String = "Mobypicture";
 		public static var IMG_LY:String = "img.ly";
 		public static var POSTEROUS:String = "Posterous";
+		public static var TWITR_PIX:String = "TwitrPix";
+		public static var TWIT_DOC:String = "TwitDoc";
 		
 		public function ServiceTypes()
 		{

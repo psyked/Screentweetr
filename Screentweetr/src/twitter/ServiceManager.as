@@ -3,9 +3,13 @@ package twitter
 	import couk.psyked.air.ApplicationConfig;
 	
 	import flash.events.DataEvent;
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.filesystem.File;
 	
 	import twitter.types.ServiceTypes;
@@ -27,7 +31,13 @@ package twitter
 			trace("ServiceManager serviceType");
 			if (twitterService)
 			{
+				twitterService.removeEventListener(Event.CANCEL, cancelHandler);
+				twitterService.removeEventListener(Event.COMPLETE, completeHandler);
+				twitterService.removeEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+				twitterService.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+				twitterService.removeEventListener(Event.OPEN, openHandler);
 				twitterService.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+				twitterService.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 				twitterService.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 				twitterService = null;
 			}
@@ -60,13 +70,26 @@ package twitter
 				case ServiceTypes.POSTEROUS:
 					twitterService = Posterous.instance;
 					break;
+				case ServiceTypes.TWITR_PIX:
+					twitterService = TwitrPix.instance;
+					break;
+				case ServiceTypes.TWIT_DOC:
+					twitterService = TwitDoc.instance;
+					break;
 				default:
 					ApplicationConfig.instance.setSetting("defaultService", ServiceTypes.TWEET_PHOTO);
 					twitterService = TweetPhoto.instance;
 					break;
 			}
+			twitterService.addEventListener(Event.CANCEL, cancelHandler);
+			twitterService.addEventListener(Event.COMPLETE, completeHandler);
+			twitterService.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+			twitterService.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			twitterService.addEventListener(Event.OPEN, openHandler);
 			twitterService.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			twitterService.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			twitterService.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+
 		}
 
 		public function get serviceType():String
@@ -74,10 +97,46 @@ package twitter
 			return _serviceType;
 		}
 
-		private function progressHandler(e:ProgressEvent):void
+		private function cancelHandler(event:Event):void
 		{
-			trace("ServiceManager progressHandler");
-			dispatchEvent(e.clone());
+			dispatchEvent(event.clone());
+			trace("cancelHandler: " + event);
+		}
+
+		private function completeHandler(event:Event):void
+		{
+			dispatchEvent(event.clone());
+			trace("completeHandler: " + event);
+		}
+
+		private function httpStatusHandler(event:HTTPStatusEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("httpStatusHandler: " + event);
+		}
+
+		private function ioErrorHandler(event:IOErrorEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("ioErrorHandler: " + event);
+		}
+
+		private function openHandler(event:Event):void
+		{
+			dispatchEvent(event.clone());
+			trace("openHandler: " + event);
+		}
+
+		private function progressHandler(event:ProgressEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("Uploading", Math.round((event.bytesLoaded / event.bytesTotal) * 100), "%");
+		}
+
+		private function securityErrorHandler(event:SecurityErrorEvent):void
+		{
+			dispatchEvent(event.clone());
+			trace("securityErrorHandler: " + event);
 		}
 
 		private function uploadCompleteDataHandler(e:DataEvent):void

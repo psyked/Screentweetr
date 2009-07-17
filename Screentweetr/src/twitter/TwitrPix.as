@@ -10,19 +10,17 @@ package twitter
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
-	import flash.utils.ByteArray;
-	
-	import ru.inspirit.net.MultipartURLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 
-	public class ScreenTweet extends EventDispatcher implements ITwitterService
+	public class TwitrPix extends EventDispatcher implements ITwitterService
 	{
-		private static var _instance:ScreenTweet;
-		private var file:File;
-		private var APIKey:String = "api-st-76030b7f18bcf4d613fbfdb514bdb1f2";
 
-		public function ScreenTweet()
+		private static var _instance:TwitrPix;
+		private var file:File;
+
+		public function TwitrPix()
 		{
 			//
 		}
@@ -39,30 +37,26 @@ package twitter
 			file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 
-			var data:ByteArray = new ByteArray();
-			var inStream:FileStream = new FileStream();
-			inStream.open(file, FileMode.READ);
-			inStream.readBytes(data, 0, data.length);
-			inStream.close();
+			var urlRequest:URLRequest;
 
-			var ml:MultipartURLLoader = new MultipartURLLoader();
-			ml.addVariable("uname", ApplicationConfig.instance.getSetting("twitterUsername"));
-			ml.addVariable("upass", ApplicationConfig.instance.getSetting("twitterPassword"));
-			ml.addVariable("apikey", APIKey);
+			var urlVars:URLVariables = new URLVariables();
+			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
+			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword");
+			
 			if (_message)
 			{
-				ml.addVariable("message", _message);
-				//ml.addVariable("privacy", "public");
+				urlRequest = new URLRequest("http://api.twitrpix.com/uploadAndPost");
+				urlVars.message = _message;
 			}
 			else
 			{
-				ml.addVariable("message", "");
-				//ml.addVariable("privacy", "private");
+				urlRequest = new URLRequest("http://api.twitrpix.com/upload");
 			}
-			ml.addVariable("privacy", "public");
-			ml.addFile(data, "screenshot.jpg", "image", "image/jpeg");
-			ml.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); // never catched
-			ml.load('http://screentweet.com/api/uploadandpost/');
+
+			urlRequest.method = URLRequestMethod.POST;
+			urlRequest.data = urlVars;
+
+			file.upload(urlRequest, 'media');
 		}
 
 		private function cancelHandler(event:Event):void
@@ -109,8 +103,7 @@ package twitter
 
 		private function uploadCompleteDataHandler(event:DataEvent):void
 		{
-			trace(event.data);
-			//trace("Upload is complete, recieved response from TwitPic.");
+			//trace("Upload is complete, recieved response from TwitrPix.");
 			var resultXML:XML = new XML(event.text);
 
 			var errorMessage:String = resultXML.child("err")[0];
@@ -124,16 +117,16 @@ package twitter
 			file.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			file.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			file.removeEventListener(Event.COMPLETE, uploadCompleteDataHandler);
-			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); 
 
 			dispatchEvent(event.clone());
 		}
 
-		public static function get instance():ScreenTweet
+		public static function get instance():TwitrPix
 		{
 			if (!_instance)
 			{
-				_instance = new ScreenTweet();
+				_instance = new TwitrPix();
 			}
 			return _instance;
 		}

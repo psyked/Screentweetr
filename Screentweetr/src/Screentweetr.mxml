@@ -39,11 +39,11 @@
 			public var uploadMessage:String
 
 			private static var _instance:Screentweetr;
-			
-			/* 
-					- Add a radial gradient to the blue background of the windows
-					- Add TwitrPix & TwitDoc APIs
-					- Add rollovers to close buttons, etc.
+
+			/*
+			   - Add a radial gradient to the blue background of the windows
+			   - Add TwitrPix & TwitDoc APIs
+			   - Add rollovers to close buttons, etc.
 			 */
 
 			private function init(e:FlexEvent):void
@@ -190,7 +190,10 @@
 				if (settings == null)
 				{
 					settings = new SettingsWindow();
-					settings.type = NativeWindowType.UTILITY;
+					//settings.type = NativeWindowType.UTILITY;
+					settings.type = NativeWindowType.NORMAL;
+					settings.resizable = false;
+					settings.maximizable = false;
 					settings.systemChrome = NativeWindowSystemChrome.ALTERNATE;
 					settings.title = "Screentweetr Settings";
 					settings.open(true);
@@ -213,7 +216,11 @@
 				if (help == null)
 				{
 					help = new HelpWindow();
-					help.type = NativeWindowType.UTILITY;
+					//help.type = NativeWindowType.UTILITY;
+					help.type = NativeWindowType.NORMAL;
+					help.resizable = false;
+					help.minimizable = false;
+					help.maximizable = false;
 					help.systemChrome = NativeWindowSystemChrome.ALTERNATE;
 					help.title = "Welcome to Screentweetr";
 					help.open(true);

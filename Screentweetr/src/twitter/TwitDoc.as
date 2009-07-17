@@ -16,13 +16,13 @@ package twitter
 	
 	import ru.inspirit.net.MultipartURLLoader;
 
-	public class ScreenTweet extends EventDispatcher implements ITwitterService
+	public class TwitDoc extends EventDispatcher implements ITwitterService
 	{
-		private static var _instance:ScreenTweet;
-		private var file:File;
-		private var APIKey:String = "api-st-76030b7f18bcf4d613fbfdb514bdb1f2";
 
-		public function ScreenTweet()
+		private static var _instance:TwitDoc;
+		private var file:File;
+
+		public function TwitDoc()
 		{
 			//
 		}
@@ -39,6 +39,27 @@ package twitter
 			file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
 
+			/* var urlRequest:URLRequest;
+
+			var urlVars:URLVariables = new URLVariables();
+			urlVars.username = ApplicationConfig.instance.getSetting("twitterUsername");
+			urlVars.password = ApplicationConfig.instance.getSetting("twitterPassword");
+			
+			if (_message)
+			{
+				urlRequest = new URLRequest("http://twitdoc.com/api/uploadAndTweet");
+				urlVars.message = _message;
+			}
+			else
+			{
+				urlRequest = new URLRequest("http://twitdoc.com/api/upload");
+			}
+
+			urlRequest.method = URLRequestMethod.POST;
+			urlRequest.data = urlVars;
+
+			file.upload(urlRequest, 'file_1'); */
+			
 			var data:ByteArray = new ByteArray();
 			var inStream:FileStream = new FileStream();
 			inStream.open(file, FileMode.READ);
@@ -46,9 +67,9 @@ package twitter
 			inStream.close();
 
 			var ml:MultipartURLLoader = new MultipartURLLoader();
-			ml.addVariable("uname", ApplicationConfig.instance.getSetting("twitterUsername"));
-			ml.addVariable("upass", ApplicationConfig.instance.getSetting("twitterPassword"));
-			ml.addVariable("apikey", APIKey);
+			ml.addVariable("username", ApplicationConfig.instance.getSetting("twitterUsername"));
+			ml.addVariable("password", ApplicationConfig.instance.getSetting("twitterPassword"));
+			//ml.addVariable("apikey", APIKey);
 			if (_message)
 			{
 				ml.addVariable("message", _message);
@@ -59,10 +80,9 @@ package twitter
 				ml.addVariable("message", "");
 				//ml.addVariable("privacy", "private");
 			}
-			ml.addVariable("privacy", "public");
-			ml.addFile(data, "screenshot.jpg", "image", "image/jpeg");
+			ml.addFile(data, "screenshot.jpg", "file_1", "image/jpeg");
 			ml.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); // never catched
-			ml.load('http://screentweet.com/api/uploadandpost/');
+			ml.load('http://twitdoc.com/api/uploadAndTweet');
 		}
 
 		private function cancelHandler(event:Event):void
@@ -109,12 +129,11 @@ package twitter
 
 		private function uploadCompleteDataHandler(event:DataEvent):void
 		{
-			trace(event.data);
-			//trace("Upload is complete, recieved response from TwitPic.");
-			var resultXML:XML = new XML(event.text);
+			//trace("Upload is complete, recieved response from TwitDoc.");
+			//var resultXML:XML = new XML(event.text);
 
-			var errorMessage:String = resultXML.child("err")[0];
-			var resultUrl:String = resultXML.child("mediaurl")[0];
+			//var errorMessage:String = resultXML.child("err")[0];
+			//var resultUrl:String = resultXML.child("mediaurl")[0];
 
 			file.removeEventListener(Event.CANCEL, cancelHandler);
 			file.removeEventListener(Event.COMPLETE, completeHandler);
@@ -124,16 +143,16 @@ package twitter
 			file.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			file.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 			file.removeEventListener(Event.COMPLETE, uploadCompleteDataHandler);
-			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
+			file.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler); 
 
 			dispatchEvent(event.clone());
 		}
 
-		public static function get instance():ScreenTweet
+		public static function get instance():TwitDoc
 		{
 			if (!_instance)
 			{
-				_instance = new ScreenTweet();
+				_instance = new TwitDoc();
 			}
 			return _instance;
 		}
