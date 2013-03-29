@@ -1,6 +1,4 @@
-Screentweetr is an AIR application for uploading desktop screenshots to twitter image services. You can download it now, from the [AIR Marketplace][1].
-
-[![Screentweetr][3]][3]
+Screentweetr is an AIR application for uploading desktop screenshots to twitter image services.
 
 ### So, what is Screentweetr?
 
@@ -28,12 +26,6 @@ For example; [ImageSizer][16] takes images and resizes them. That’s its core f
 
 Oh my, where do we start? Well, there’s three key elements to the future development; Visuals, Services and User experience. Visuals and user experience are just generally improving the look and feel of the application, and how it works. Services were suggested by [@destroytoday][17] and sounds like a good idea – basically adding support for more than one image uploading service. So, [TweetPhoto][4] is on the list to go alongside support for TwitPic. TweetPhoto, ScreenTweet and TwitPic are all supported, and there’s plans for more… 10 services are now supported – check the top of the page for the complete list.
 
-### Where can I download it?
-
-That’s simple. Screentweetr is available for [download from the Adobe AIR Marketplace][18]. I’ll get an install badge up on here soon, but for now, just go to the AIR Marketplace.
-
- [1]: http://www.adobe.com/cfusion/marketplace/index.cfm?event=marketplace.offering&marketplaceid=1&publisherid=10603&offeringid=13500
- []: http://www.adobe.com/cfusion/marketplace/index.cfm?event=marketplace.offering&marketplaceid=1&publisherid=10603&offeringid=13500
  [3]: http://twitpic.com/
  [4]: http://www.tweetphoto.com/index.php
  [5]: http://screentweet.com/
@@ -49,4 +41,4 @@ That’s simple. Screentweetr is available for [download from the Adobe AIR Mark
  [15]: http://uploads.psyked.co.uk/2009/06/screentweetr2.jpg "Screentweetr"
  [16]: http://www.psyked.co.uk/adobe/apollo/imagesizer-version-049-released.htm
  [17]: http://twitter.com/destroytoday
- [18]: http://www.adobe.com/cfusion/marketplace/index.cfm?event=marketplace.offering&marketplaceid=1&publisherid=10603&offeringid=13500 "Click here to visit the AIR Marketplace to download Screentweetr." 
+ 
